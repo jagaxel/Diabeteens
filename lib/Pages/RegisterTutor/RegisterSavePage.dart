@@ -1,7 +1,6 @@
-import 'package:diabeteens_v2/Elements/CustomButton.dart';
-import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/LoginPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
+import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPasswordPage.dart';
+import 'package:diabeteens_v2/Pages/RegisterTutor/SuccessfullRegisterTutorPage.dart';
+import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSavePage extends StatefulWidget {
@@ -33,42 +32,60 @@ class _RegisterScreenState extends State<RegisterSavePage> {
 
   @override
   Widget build(BuildContext context) {
-    double widgetHeight = MediaQuery.of(context).size.height;
-    double widgetWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xFF4c709a),
-        body: SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            const SizedBox(
-              width: 302,
-              height: 50,
-              child: Text("Datos del Tutor", 
-                style: TextStyle(
-                  color: Color(0xFF90bbd0),
-                  fontSize: 20
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppBar(
+                backgroundColor: Color(0xFF4c709a),
+                leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegisterPasswordPage(),
+                      ) 
+                    );
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Color(0xFFd4b0a0),
+                    size: 30,
+                  )
+                ),
+              ),
+              const SizedBox(
+                width: 302,
+                height: 50,
+                child: Text("Datos del Tutor", 
+                  style: TextStyle(
+                    color: Color(0xFF90bbd0),
+                    fontSize: 20
+                  )
                 )
-              )
-            ),
-            const SizedBox(
-              width: 302,
-              height: 50,
-              child: Text("¿Guardar información de inicio de sesión?", style: TextStyle(color: Colors.white))
-            ),
-            SizedBox(
-                height: widgetHeight * .06,
-                width: widgetWidth * .5,
+              ),
+              const SizedBox(
+                width: 302,
+                height: 50,
+                child: Text("¿Guardar información de inicio de sesión?", style: TextStyle(color: Colors.white))
+              ),
+              SizedBox(
+                height: 50,
+                width: 200,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Color(0xFF795a9e)
                   ),
                   onPressed: () {
-                    print("Guardar");
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SuccessfullRegisterTutorPage(),
+                      ) 
+                    );
                   },
                   child: const Text("Guardar",
                       style: TextStyle(
@@ -81,11 +98,16 @@ class _RegisterScreenState extends State<RegisterSavePage> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: widgetHeight * .06,
-                width: widgetWidth * .5,
+                height: 50,
+                width: 200,
                 child: OutlinedButton(
                   onPressed: () {
-                    print("Ahora no");
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VistaInicial(),
+                      ) 
+                    );
                   },
                   child: Text("Ahora no"),
                   style: OutlinedButton.styleFrom(
@@ -100,9 +122,10 @@ class _RegisterScreenState extends State<RegisterSavePage> {
                   ),
                 ),
               )
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      )
+    );
   }
 }

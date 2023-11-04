@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,8 +26,26 @@ class _LoginScreenState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            AppBar(
+              backgroundColor: Color(0xFF4c709a),
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VistaInicial(),
+                    ) 
+                  );
+                },
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Color(0xFFd4b0a0),
+                  size: 30,
+                )
+              ),
+            ),
             const SizedBox(
-              height: 320,
+              width: 290,
               child: Image(
                 image: AssetImage("assets/images/logo-diabeteens-letras.png"),
               ),

@@ -4,15 +4,15 @@ import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
-class RegisterNamePage extends StatefulWidget {
+class RegisterNamSong extends StatefulWidget {
   static const routeName = '/registerTutor';
-  const RegisterNamePage({super.key});
+  const RegisterNamSong({super.key});
 
   @override
-  State<RegisterNamePage> createState() => _RegisterScreenState();
+  State<RegisterNamSong> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterNamePage> {
+class _RegisterScreenState extends State<RegisterNamSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController nombreController = TextEditingController();
   TextEditingController primerApellidoController = TextEditingController();
