@@ -1,6 +1,6 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +65,7 @@ class _RegisterScreenState extends State<RegisterNamSong> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Datos del Tutor", 
+                child: Text("Datos del Hijo", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
@@ -187,7 +187,7 @@ class _RegisterScreenState extends State<RegisterNamSong> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPhonePage()
+                        builder: (context) => RegisterBirthDateSong()
                       ) 
                     );
                   }

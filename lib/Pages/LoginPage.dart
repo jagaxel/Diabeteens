@@ -1,5 +1,6 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
+import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +130,14 @@ class _LoginScreenState extends State<LoginPage> {
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                       GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MethodToSendCode()
+                            ) 
+                          );
+                          },
                           child: const Text("Olvidé mi contraseña...",
                               style: TextStyle(
                                 color: Colors.white,
