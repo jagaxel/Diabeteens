@@ -3,9 +3,11 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterNamePage extends StatefulWidget {
-  static const routeName = '/registerTutor';
   const RegisterNamePage({super.key});
 
   @override
@@ -18,6 +20,7 @@ class _RegisterScreenState extends State<RegisterNamePage> {
   TextEditingController primerApellidoController = TextEditingController();
   TextEditingController segundoApellidoController = TextEditingController();
   bool _obscureText = true;
+  int id = 0;
 
   // @override
   // void dispose() {
@@ -33,6 +36,21 @@ class _RegisterScreenState extends State<RegisterNamePage> {
     nombreController.clear();
     primerApellidoController.clear();
     segundoApellidoController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerName.php'),
+      body: {
+        "nombre": this.nombreController.text,
+        "primerApellido": this.primerApellidoController.text,
+        "segundoApellido": this.segundoApellidoController.text,
+        "id": this.id.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    this.id = respuesta["id"];
+    print(this.id);
   }
 
   @override
@@ -182,14 +200,16 @@ class _RegisterScreenState extends State<RegisterNamePage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPhonePage()
+                        builder: (context) => RegisterPhonePage(id: this.id)
                       ) 
                     );
+
                   }
                 },
                 text: "Siguiente",

@@ -3,19 +3,31 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterPhonePage extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterPhonePage({super.key});
+  final int id;
+
+  const RegisterPhonePage({super.key, required this.id});
 
   @override
-  State<RegisterPhonePage> createState() => _RegisterScreenState();
+  State<RegisterPhonePage> createState() => _RegisterPhonePage();
 }
 
-class _RegisterScreenState extends State<RegisterPhonePage> {
+class _RegisterPhonePage extends State<RegisterPhonePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   bool _obscureText = true;
+  late int _id;
+
+  @override
+  void initState() {
+    super.initState();
+    _id = widget.id;
+    print(_id);
+  }
 
   // @override
   // void dispose() {
@@ -29,6 +41,18 @@ class _RegisterScreenState extends State<RegisterPhonePage> {
 
   void clearControllers() {
     phoneController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
+      body: {
+        "telefono": this.phoneController.text,
+        "id": this._id.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    print(respuesta);
   }
 
   @override
@@ -114,12 +138,13 @@ class _RegisterScreenState extends State<RegisterPhonePage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage()
+                        builder: (context) => RegisterCorreoPage(idPersona: _id)
                       ) 
                     );
                   }

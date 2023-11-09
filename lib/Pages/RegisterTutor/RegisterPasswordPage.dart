@@ -3,10 +3,15 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterSavePage.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterPasswordPage extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterPasswordPage({super.key});
+  final int idPersona;
+  final int idTutor;
+  final String correo;
+  const RegisterPasswordPage({super.key, required this.idPersona, required this.idTutor, required this.correo});
 
   @override
   State<RegisterPasswordPage> createState() => _RegisterScreenState();
@@ -17,6 +22,18 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
   TextEditingController contrasenaController = TextEditingController();
   TextEditingController validContrasenaController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  late int _idTutor;
+  late String _correo;
+
+  @override
+  void initState() {
+    super.initState();
+    _idPersona = widget.idPersona;
+    _idTutor = widget.idTutor;
+    _correo = widget.correo;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -30,6 +47,19 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
 
   void clearControllers() {
     contrasenaController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPassword.php'),
+      body: {
+        "idTutor": this._idTutor.toString(),
+        "correo": _correo,
+        "contrasena": this.contrasenaController.text,
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    print(respuesta);
   }
 
   @override
@@ -48,7 +78,7 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(),
+                        builder: (context) => RegisterCorreoPage(idPersona: _idPersona),
                       ) 
                     );
                   },
@@ -119,15 +149,16 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterSavePage()
-                      ) 
-                    );
-                  }
+                onPressed: () async {
+                  await sendData();
+                  // if (_formKey.currentState!.validate()) {
+                  //   Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => RegisterSavePage()
+                  //     ) 
+                  //   );
+                  // }
                 },
                 text: "Siguiente",
                 buttonBackgroundColor: Color(0xFF795a9e),

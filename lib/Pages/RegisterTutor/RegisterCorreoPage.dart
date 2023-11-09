@@ -3,10 +3,13 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPasswordPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterCorreoPage extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterCorreoPage({super.key});
+  final int idPersona;
+  const RegisterCorreoPage({super.key, required this.idPersona});
 
   @override
   State<RegisterCorreoPage> createState() => _RegisterScreenState();
@@ -16,6 +19,15 @@ class _RegisterScreenState extends State<RegisterCorreoPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController correoController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  int _idTutor = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _idPersona = widget.idPersona;
+    print(_idPersona);
+  }
 
   // @override
   // void dispose() {
@@ -29,6 +41,19 @@ class _RegisterScreenState extends State<RegisterCorreoPage> {
 
   void clearControllers() {
     correoController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerCorreo.php'),
+      body: {
+        "correo": this.correoController.text,
+        "id": this._idPersona.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    print(respuesta);
+    _idTutor = respuesta["idTutor"];
   }
 
   @override
@@ -47,7 +72,7 @@ class _RegisterScreenState extends State<RegisterCorreoPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPhonePage(),
+                        builder: (context) => RegisterPhonePage(id: _idPersona),
                       ) 
                     );
                   },
@@ -105,12 +130,13 @@ class _RegisterScreenState extends State<RegisterCorreoPage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPasswordPage()
+                        builder: (context) => RegisterPasswordPage(idPersona: _idPersona, idTutor: _idTutor, correo: correoController.text)
                       ) 
                     );
                   }

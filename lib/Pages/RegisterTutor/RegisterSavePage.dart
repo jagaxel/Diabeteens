@@ -4,8 +4,10 @@ import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSavePage extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterSavePage({super.key});
+  final int idPersona;
+  final int idTutor;
+  final String correo;
+  const RegisterSavePage({super.key, required this.idPersona, required this.idTutor, required this.correo});
 
   @override
   State<RegisterSavePage> createState() => _RegisterScreenState();
@@ -15,6 +17,18 @@ class _RegisterScreenState extends State<RegisterSavePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  late int _idTutor;
+  late String _correo;
+
+  @override
+  void initState() {
+    super.initState();
+    _idPersona = widget.idPersona;
+    _idTutor = widget.idTutor;
+    _correo = widget.correo;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -46,7 +60,7 @@ class _RegisterScreenState extends State<RegisterSavePage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPasswordPage(),
+                        builder: (context) => RegisterPasswordPage(idPersona: _idPersona, idTutor: _idTutor, correo: _correo),
                       ) 
                     );
                   },
