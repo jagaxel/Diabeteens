@@ -151,14 +151,14 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
                 buttonHeight: 46,
                 onPressed: () async {
                   await sendData();
-                  // if (_formKey.currentState!.validate()) {
-                  //   Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => RegisterSavePage()
-                  //     ) 
-                  //   );
-                  // }
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegisterSavePage(idPersona: _idPersona, idTutor: _idTutor, correo: _correo)
+                      ) 
+                    );
+                  }
                 },
                 text: "Siguiente",
                 buttonBackgroundColor: Color(0xFF795a9e),

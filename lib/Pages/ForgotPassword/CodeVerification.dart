@@ -107,12 +107,12 @@ class _RegisterScreenState extends State<CodeVerification> {
                 buttonHeight: 46,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPasswordSong()
-                      ) 
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RegisterPasswordSong()
+                    //   ) 
+                    // );
                   }
                 },
                 text: "Validar",

@@ -2,10 +2,16 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/SuccessfullRegisterSong.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterPasswordSong extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterPasswordSong({super.key});
+  final int idPersona;
+  final int idTutor;
+  final int idHijo;
+  final String telefono;
+  const RegisterPasswordSong({super.key, required this.idPersona, required this.idTutor, required this.idHijo, required this.telefono});
 
   @override
   State<RegisterPasswordSong> createState() => _RegisterScreenState();
@@ -16,6 +22,20 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
   TextEditingController contrasenaController = TextEditingController();
   TextEditingController validContrasenaController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  late int _idTutor;
+  late int _idHijo;
+  late String _telefono;
+
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    _idHijo = widget.idHijo;
+    _telefono = widget.telefono;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -29,6 +49,18 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
 
   void clearControllers() {
     contrasenaController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerPassword.php'),
+      body: {
+        "telefono": _telefono,
+        "idHijo": _idHijo.toString(),
+        "contrasena": contrasenaController.text
+      }
+    );
+    var respuesta = jsonDecode(response.body);
   }
 
   @override
@@ -100,9 +132,10 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SuccessfullRegisterSong()

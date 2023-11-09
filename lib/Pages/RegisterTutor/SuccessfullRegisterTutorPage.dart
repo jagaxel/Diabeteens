@@ -3,14 +3,23 @@ import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterNameSong.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfullRegisterTutorPage extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const SuccessfullRegisterTutorPage({super.key});
+  final int idTutor;
+  const SuccessfullRegisterTutorPage({super.key, required this.idTutor});
 
   @override
   State<SuccessfullRegisterTutorPage> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<SuccessfullRegisterTutorPage> {
+  late int _idTutor;
+
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    print(_idTutor);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +57,7 @@ class _RegisterScreenState extends State<SuccessfullRegisterTutorPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const RegisterNamSong()
+                        builder: (context) => RegisterNamSong(idTutor: _idTutor)
                       ) 
                     );
                   },

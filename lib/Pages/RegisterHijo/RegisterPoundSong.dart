@@ -3,10 +3,15 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPhoneSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterSexSong.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterPoundSong extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterPoundSong({super.key});
+  final int idPersona;
+  final int idTutor;
+  final int idHijo;
+  const RegisterPoundSong({super.key, required this.idPersona, required this.idTutor, required this.idHijo});
 
   @override
   State<RegisterPoundSong> createState() => _RegisterScreenState();
@@ -16,7 +21,18 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController poundController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  late int _idTutor;
+  late int _idHijo;
 
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    _idHijo = widget.idHijo;
+    print(_idTutor);
+  }
   // @override
   // void dispose() {
   //   // Dispose the text editing controllers
@@ -29,6 +45,17 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
 
   void clearControllers() {
     poundController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerPound.php'),
+      body: {
+        "peso": poundController.text,
+        "idHijo": _idHijo.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
   }
 
   @override
@@ -44,12 +71,12 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterSexSong(),
-                      ) 
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RegisterSexSong(),
+                    //   ) 
+                    // );
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -105,12 +132,13 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPhoneSong()
+                        builder: (context) => RegisterPhoneSong(idPersona: _idPersona, idTutor: _idTutor, idHijo: _idHijo)
                       ) 
                     );
                   }

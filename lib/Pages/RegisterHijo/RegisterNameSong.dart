@@ -3,10 +3,13 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterNamSong extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterNamSong({super.key});
+  final int idTutor;
+  const RegisterNamSong({super.key, required this.idTutor});
 
   @override
   State<RegisterNamSong> createState() => _RegisterScreenState();
@@ -18,6 +21,15 @@ class _RegisterScreenState extends State<RegisterNamSong> {
   TextEditingController primerApellidoController = TextEditingController();
   TextEditingController segundoApellidoController = TextEditingController();
   bool _obscureText = true;
+  int idPersona = 0;
+  late int _idTutor;
+
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -33,6 +45,21 @@ class _RegisterScreenState extends State<RegisterNamSong> {
     nombreController.clear();
     primerApellidoController.clear();
     segundoApellidoController.clear();
+  }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerName.php'),
+      body: {
+        "nombre": this.nombreController.text,
+        "primerApellido": this.primerApellidoController.text,
+        "segundoApellido": this.segundoApellidoController.text,
+        "id": this.idPersona.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    this.idPersona = respuesta["id"];
+    print(this.idPersona);
   }
 
   @override
@@ -182,12 +209,13 @@ class _RegisterScreenState extends State<RegisterNamSong> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterBirthDateSong()
+                        builder: (context) => RegisterBirthDateSong(idPersona: this.idPersona, idTutor: _idTutor)
                       ) 
                     );
                   }

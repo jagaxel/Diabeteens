@@ -2,10 +2,14 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterNameSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterSexSong.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterBirthDateSong extends StatefulWidget {
-  static const routeName = '/registerTutor';
-  const RegisterBirthDateSong({super.key});
+  final int idPersona;
+  final int idTutor;
+  const RegisterBirthDateSong({super.key, required this.idPersona, required this.idTutor});
 
   @override
   State<RegisterBirthDateSong> createState() => _RegisterScreenState();
@@ -15,6 +19,17 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController dateController = TextEditingController();
   bool _obscureText = true;
+  late int _idPersona;
+  late int _idTutor;
+  int _edadHijo = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -41,7 +56,39 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
+        _calculateAge();
       });
+  }
+
+  Future<void> sendData() async {
+    List<String> fechaC = DateTime(selectedDate.year, selectedDate.month, selectedDate.day).toString().split(" ");
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerBirthDate.php'),
+      body: {
+        "fechaNacimiento": fechaC[0].toString(),
+        "edad": _edadHijo.toString(),
+        "idPersona": _idPersona.toString()
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+  }
+
+  Future<void> _calculateAge() async {
+    DateTime fechaNacimiento = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+    // Fecha actual
+    DateTime fechaActual = DateTime.now();
+
+    // Cálculo de la edad
+    int edad = fechaActual.year - fechaNacimiento.year;
+    if (fechaActual.month < fechaNacimiento.month ||
+        (fechaActual.month == fechaNacimiento.month && fechaActual.day < fechaNacimiento.day)) {
+      edad--;
+    }
+
+    // Impresión de la edad
+    // print('La edad es: $edad años');
+    _edadHijo = edad;
   }
 
   @override
@@ -60,7 +107,7 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterNamSong(),
+                        builder: (context) => RegisterNamSong(idTutor: _idTutor),
                       ) 
                     );
                   },
@@ -155,12 +202,13 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () {
+                onPressed: () async {
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
+                    await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterSexSong()
+                        builder: (context) => RegisterSexSong(idPersona: _idPersona, idTutor: _idTutor)
                       ) 
                     );
                   }

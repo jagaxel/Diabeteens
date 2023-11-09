@@ -97,7 +97,7 @@ class _RegisterScreenState extends State<RegisterSavePage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SuccessfullRegisterTutorPage(),
+                        builder: (context) => SuccessfullRegisterTutorPage(idTutor: _idTutor),
                       ) 
                     );
                   },

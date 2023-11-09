@@ -44,12 +44,12 @@ class _RegisterScreenState extends State<RegisterSendCodeSong> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPhoneSong(),
-                      ) 
-                    );
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RegisterPhoneSong(),
+                    //   ) 
+                    // );
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -115,14 +115,14 @@ class _RegisterScreenState extends State<RegisterSendCodeSong> {
                 buttonWidth: 260,
                 buttonHeight: 46,
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPasswordSong()
-                      ) 
-                    );
-                  }
+                  // if (_formKey.currentState!.validate()) {
+                  //   Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => RegisterPasswordSong()
+                  //     ) 
+                  //   );
+                  // }
                 },
                 text: "Validar",
                 buttonBackgroundColor: Color(0xFF795a9e),
