@@ -135,11 +135,11 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
                 onPressed: () async {
                   await sendData();
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.pushReplacement(
-                      context,
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => SuccessfullRegisterSong()
-                      ) 
+                      )
                     );
                   }
                 },

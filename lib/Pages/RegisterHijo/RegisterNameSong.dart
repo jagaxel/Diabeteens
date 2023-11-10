@@ -212,11 +212,11 @@ class _RegisterScreenState extends State<RegisterNamSong> {
                 onPressed: () async {
                   await sendData();
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.pushReplacement(
-                      context,
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => RegisterBirthDateSong(idPersona: this.idPersona, idTutor: _idTutor)
-                      ) 
+                      )
                     );
                   }
                 },

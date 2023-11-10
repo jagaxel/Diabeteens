@@ -4,6 +4,11 @@ import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+// import 'package:flutter_email_sender/flutter_email_sender.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginScreen';
@@ -19,6 +24,47 @@ class _LoginScreenState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   bool _obscureText = true;
+
+  // _launch(url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'No se envió $url';
+  //   }
+  // }
+
+  // launchEMAI() async {
+  //   // final Uri _emailLaunchUri = Uri(
+  //   //   scheme: 'mailto',
+  //   //   path: 'pp103634@gmail.com',
+  //   //   queryParameters: {
+  //   //     'subject': 'Codigo de Validación',
+  //   //     'body': 'Prueba'
+  //   //   }
+  //   // );
+  //   // _launch(_emailLaunchUri.toString());
+  //   final Email email = await Email(
+  //     body: 'Prueba',
+  //     subject: 'Codigo',
+  //     recipients: ['pp103634@gmail.com'],
+  //     isHTML: false,
+  //   );
+
+  //   await FlutterEmailSender.send(email);
+  // }
+
+  Future<void> sendData() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/api_diabeteens/login.php'),
+      body: {
+        "usuario": emailController.text,
+        "contrasena": passwordController.text
+      }
+    );
+    var respuesta = jsonDecode(response.body);
+    print(respuesta);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold (
@@ -160,6 +206,7 @@ class _LoginScreenState extends State<LoginPage> {
                   if (_formKey.currentState!.validate()) {
                     print("Iniciar Sesión");
                   }
+                  await sendData();
                 },
                 text: "Iniciar Sesión",
                 buttonBackgroundColor: Color(0xFF795a9e),

@@ -68,12 +68,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterNamePage(),
-                      ) 
-                    );
+                    Navigator.pop(context);
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -141,11 +136,11 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                 onPressed: () async {
                   await sendData();
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.pushReplacement(
-                      context,
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => RegisterCorreoPage(idPersona: _id)
-                      ) 
+                      )
                     );
                   }
                 },

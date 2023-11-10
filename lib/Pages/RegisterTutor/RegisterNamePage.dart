@@ -201,13 +201,19 @@ class _RegisterScreenState extends State<RegisterNamePage> {
                 buttonWidth: 260,
                 buttonHeight: 46,
                 onPressed: () async {
-                  await sendData();
+                  // await sendData();
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.pushReplacement(
-                      context,
+                    // await Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RegisterPhonePage(id: this.id)
+                    //   ) 
+                    // );
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => RegisterPhonePage(id: this.id)
-                      ) 
+                      )
                     );
 
                   }

@@ -75,12 +75,7 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(idPersona: _idPersona),
-                      ) 
-                    );
+                    Navigator.pop(context);
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -152,11 +147,11 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
                 onPressed: () async {
                   await sendData();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushReplacement(
-                      context,
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => RegisterSavePage(idPersona: _idPersona, idTutor: _idTutor, correo: _correo)
-                      ) 
+                      )
                     );
                   }
                 },

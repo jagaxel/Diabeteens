@@ -71,12 +71,7 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => RegisterSexSong(),
-                    //   ) 
-                    // );
+                    Navigator.pop(context);
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -135,11 +130,11 @@ class _RegisterScreenState extends State<RegisterPoundSong> {
                 onPressed: () async {
                   await sendData();
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.pushReplacement(
-                      context,
+                    await Navigator.push(
+                      context, 
                       MaterialPageRoute(
                         builder: (context) => RegisterPhoneSong(idPersona: _idPersona, idTutor: _idTutor, idHijo: _idHijo)
-                      ) 
+                      )
                     );
                   }
                 },
