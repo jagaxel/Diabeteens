@@ -1,5 +1,8 @@
+import 'package:diabeteens_v2/Models/MenuBtn.dart';
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/MenuTutor.dart';
 import 'package:flutter/material.dart';
 
 // import '../utils/constants.dart';
@@ -59,6 +62,9 @@ class _GetStartedScreenState extends State<VistaInicial> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const LoginPage()
+                      // builder: (context) => const MenuBtn()
+                      // builder: (context) => const EntryPointTutor()
+                      // builder: (context) => const MenuTutor(idHijos: "5,6", cantHijos: 2,)
                     ) 
                   );
                 },

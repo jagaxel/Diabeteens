@@ -49,13 +49,13 @@ class _RegisterScreenState extends State<RegisterSexSong> {
   String? selectedValue;
 
   List<String> items = [
-    'Mujer',
-    'Hombre',
+    'Masculino',
+    'Femenino',
     // '31 tipos de gays',
   ];
 
   Future<void> sendData() async {
-    sexo = selectedValue == "Mujer" ? "M" : "H";
+    sexo = selectedValue == "Masculino" ? "M" : "F";
     final response = await http.post(
       Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerSex.php'),
       body: {

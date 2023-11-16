@@ -2,11 +2,15 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/HomeTutor.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:flutter_email_sender/flutter_email_sender.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
@@ -24,6 +28,8 @@ class _LoginScreenState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   bool _obscureText = true;
+
+  DirectionIp ip = DirectionIp();
 
   // _launch(url) async {
   //   if (await canLaunch(url)) {
@@ -54,15 +60,45 @@ class _LoginScreenState extends State<LoginPage> {
   // }
 
   Future<void> sendData() async {
-    final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/login.php'),
-      body: {
-        "usuario": emailController.text,
-        "contrasena": passwordController.text
+    try {
+      final response = await http.post(
+        Uri.parse('http://${ip.ip}/api_diabeteens/login.php'),
+        body: {
+          "usuario": emailController.text,
+          "contrasena": passwordController.text
+        }
+      );
+      var respuesta = jsonDecode(response.body);
+      print(respuesta);
+      if (respuesta["existe"]) {
+        await Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => EntryPointTutor(
+              idUsuario: int.parse(respuesta["idUsuario"]), 
+              idTutor: int.parse(respuesta["idTutor"]), 
+              idPersona: int.parse(respuesta["idPersona"]),
+              usuario: respuesta["usuario"],
+              nombreCompleto: respuesta["nombreCompleto"],
+              idHijos: respuesta["idHijos"],
+              cantHijos: int.parse(respuesta["cantHijos"]),
+            )
+          )
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Usuario o contraseña incorrecta",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Color.fromARGB(44, 255, 0, 0),
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
       }
-    );
-    var respuesta = jsonDecode(response.body);
-    print(respuesta);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -203,9 +239,6 @@ class _LoginScreenState extends State<LoginPage> {
                 buttonWidth: 260,
                 buttonHeight: 46,
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    print("Iniciar Sesión");
-                  }
                   await sendData();
                 },
                 text: "Iniciar Sesión",
