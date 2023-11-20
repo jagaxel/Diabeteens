@@ -1,34 +1,38 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPhoneSong.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterSexSong.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class RegisterPhonePage extends StatefulWidget {
-  final int id;
-
-  const RegisterPhonePage({super.key, required this.id});
+class RegisterPoundSong extends StatefulWidget {
+  final int idPersona;
+  final int idTutor;
+  final int idHijo;
+  const RegisterPoundSong({super.key, required this.idPersona, required this.idTutor, required this.idHijo});
 
   @override
-  State<RegisterPhonePage> createState() => _RegisterPhonePage();
+  State<RegisterPoundSong> createState() => _RegisterScreenState();
 }
 
-class _RegisterPhonePage extends State<RegisterPhonePage> {
+class _RegisterScreenState extends State<RegisterPoundSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController poundController = TextEditingController();
   bool _obscureText = true;
-  late int _id;
+  late int _idPersona;
+  late int _idTutor;
+  late int _idHijo;
 
   @override
   void initState() {
     super.initState();
-    _id = widget.id;
-    print(_id);
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    _idHijo = widget.idHijo;
+    print(_idTutor);
   }
-
   // @override
   // void dispose() {
   //   // Dispose the text editing controllers
@@ -40,19 +44,18 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
   // }
 
   void clearControllers() {
-    phoneController.clear();
+    poundController.clear();
   }
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerPound.php'),
       body: {
-        "telefono": this.phoneController.text,
-        "id": this._id.toString()
+        "peso": poundController.text,
+        "idHijo": _idHijo.toString()
       }
     );
     var respuesta = jsonDecode(response.body);
-    print(respuesta);
   }
 
   @override
@@ -80,7 +83,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Datos del Tutor", 
+                child: Text("Datos del Hijo", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
@@ -90,7 +93,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Número de celular", style: TextStyle(color: Colors.white))
+                child: Text("Peso expresado en kg", style: TextStyle(color: Colors.white))
               ),
               Form(
                 key: _formKey,
@@ -100,22 +103,13 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Ingrese su número de celular",
-                        style: TextStyle(
-                          color: Color(0xFFd4b0a0),
-                          fontSize: 15,
-                        )
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       MyTextFormField(
-                        controller: phoneController,
+                        controller: poundController,
                         inputTypes: TextInputType.name,
                         myObscureText: false,
                         onChanged: (value) {},
                         suffixicon: null,
-                        hintText: 'Núemero de celular',
+                        hintText: 'Peso',
                         // validator: (value) {
                         //   if (value == null || value.isEmpty) {
                         //     return 'Ingrese su nombre';
@@ -139,7 +133,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                     await Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(idPersona: _id)
+                        builder: (context) => RegisterPhoneSong(idPersona: _idPersona, idTutor: _idTutor, idHijo: _idHijo)
                       )
                     );
                   }

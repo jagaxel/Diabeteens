@@ -1,32 +1,35 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
-import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPoundSong.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class RegisterPhonePage extends StatefulWidget {
-  final int id;
-
-  const RegisterPhonePage({super.key, required this.id});
+class RegisterSexSong extends StatefulWidget {
+  final int idPersona;
+  final int idTutor;
+  const RegisterSexSong({super.key, required this.idPersona, required this.idTutor});
 
   @override
-  State<RegisterPhonePage> createState() => _RegisterPhonePage();
+  State<RegisterSexSong> createState() => _RegisterScreenState();
 }
 
-class _RegisterPhonePage extends State<RegisterPhonePage> {
+class _RegisterScreenState extends State<RegisterSexSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   bool _obscureText = true;
-  late int _id;
+  late int _idPersona;
+  late int _idTutor;
+  String sexo = "";
+  int _idHijo = 0;
 
   @override
   void initState() {
     super.initState();
-    _id = widget.id;
-    print(_id);
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    print(_idTutor);
   }
 
   // @override
@@ -40,19 +43,29 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
   // }
 
   void clearControllers() {
-    phoneController.clear();
+    dateController.clear();
   }
 
+  String? selectedValue;
+
+  List<String> items = [
+    'Masculino',
+    'Femenino',
+    // '31 tipos de gays',
+  ];
+
   Future<void> sendData() async {
+    sexo = selectedValue == "Masculino" ? "M" : "F";
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerSex.php'),
       body: {
-        "telefono": this.phoneController.text,
-        "id": this._id.toString()
+        "sexo": sexo,
+        "idTutor": _idTutor.toString(),
+        "idPersona": _idPersona.toString()
       }
     );
     var respuesta = jsonDecode(response.body);
-    print(respuesta);
+    _idHijo = respuesta["idHijo"];
   }
 
   @override
@@ -80,7 +93,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Datos del Tutor", 
+                child: Text("Datos del Hijo", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
@@ -90,7 +103,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Número de celular", style: TextStyle(color: Colors.white))
+                child: Text("¿Cuál es el sexo?", style: TextStyle(color: Colors.white))
               ),
               Form(
                 key: _formKey,
@@ -100,7 +113,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Ingrese su número de celular",
+                      const Text("Seleccione un sexo",
                         style: TextStyle(
                           color: Color(0xFFd4b0a0),
                           fontSize: 15,
@@ -109,19 +122,32 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      MyTextFormField(
-                        controller: phoneController,
-                        inputTypes: TextInputType.name,
-                        myObscureText: false,
-                        onChanged: (value) {},
-                        suffixicon: null,
-                        hintText: 'Núemero de celular',
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Ingrese su nombre';
-                        //   }
-                        //   return null;
-                        // },
+                      Container(
+                        height: 46, width: 377,
+                        decoration: BoxDecoration (
+                          borderRadius: BorderRadius.circular(5),
+                          color: Color(0xFF9f77df),
+                          border: Border.all(
+                            color: Color(0xFFdbb3a0),
+                            width: 1
+                          )
+                        ),
+                        child: DropdownButton<String>(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          value: selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                          items: items.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                        ),
                       ),
                     ],
                   ),
@@ -139,7 +165,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                     await Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(idPersona: _id)
+                        builder: (context) => RegisterPoundSong(idPersona: _idPersona, idTutor: _idTutor, idHijo: _idHijo)
                       )
                     );
                   }

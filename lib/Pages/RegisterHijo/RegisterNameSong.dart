@@ -1,26 +1,35 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class RegisterNamePage extends StatefulWidget {
-  const RegisterNamePage({super.key});
+class RegisterNamSong extends StatefulWidget {
+  final int idTutor;
+  const RegisterNamSong({super.key, required this.idTutor});
 
   @override
-  State<RegisterNamePage> createState() => _RegisterScreenState();
+  State<RegisterNamSong> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterNamePage> {
+class _RegisterScreenState extends State<RegisterNamSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController nombreController = TextEditingController();
   TextEditingController primerApellidoController = TextEditingController();
   TextEditingController segundoApellidoController = TextEditingController();
   bool _obscureText = true;
-  int id = 0;
+  int idPersona = 0;
+  late int _idTutor;
+
+  @override
+  void initState() {
+    super.initState();
+    _idTutor = widget.idTutor;
+    print(_idTutor);
+  }
 
   // @override
   // void dispose() {
@@ -40,17 +49,17 @@ class _RegisterScreenState extends State<RegisterNamePage> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerName.php'),
+      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerName.php'),
       body: {
         "nombre": this.nombreController.text,
         "primerApellido": this.primerApellidoController.text,
         "segundoApellido": this.segundoApellidoController.text,
-        "id": this.id.toString()
+        "id": this.idPersona.toString()
       }
     );
     var respuesta = jsonDecode(response.body);
-    this.id = respuesta["id"];
-    print(this.id);
+    this.idPersona = respuesta["id"];
+    print(this.idPersona);
   }
 
   @override
@@ -83,7 +92,7 @@ class _RegisterScreenState extends State<RegisterNamePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Datos del Tutor", 
+                child: Text("Datos del Hijo", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
@@ -201,21 +210,14 @@ class _RegisterScreenState extends State<RegisterNamePage> {
                 buttonWidth: 260,
                 buttonHeight: 46,
                 onPressed: () async {
-                  // await sendData();
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
-                    // await Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => RegisterPhonePage(id: this.id)
-                    //   ) 
-                    // );
                     await Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => RegisterPhonePage(id: this.id)
+                        builder: (context) => RegisterBirthDateSong(idPersona: this.idPersona, idTutor: _idTutor)
                       )
                     );
-
                   }
                 },
                 text: "Siguiente",

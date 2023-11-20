@@ -1,33 +1,22 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
-import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/ForgotPassword/CodeVerification.dart';
+import 'package:diabeteens_v2/Pages/LoginPage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPoundSong.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-class RegisterPhonePage extends StatefulWidget {
-  final int id;
-
-  const RegisterPhonePage({super.key, required this.id});
+class MethodToSendCode extends StatefulWidget {
+  static const routeName = '/registerTutor';
+  const MethodToSendCode({super.key});
 
   @override
-  State<RegisterPhonePage> createState() => _RegisterPhonePage();
+  State<MethodToSendCode> createState() => _RegisterScreenState();
 }
 
-class _RegisterPhonePage extends State<RegisterPhonePage> {
+class _RegisterScreenState extends State<MethodToSendCode> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   bool _obscureText = true;
-  late int _id;
-
-  @override
-  void initState() {
-    super.initState();
-    _id = widget.id;
-    print(_id);
-  }
 
   // @override
   // void dispose() {
@@ -40,20 +29,15 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
   // }
 
   void clearControllers() {
-    phoneController.clear();
+    dateController.clear();
   }
 
-  Future<void> sendData() async {
-    final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
-      body: {
-        "telefono": this.phoneController.text,
-        "id": this._id.toString()
-      }
-    );
-    var respuesta = jsonDecode(response.body);
-    print(respuesta);
-  }
+  String? selectedValue;
+
+  List<String> items = [
+    'Correo electrónico',
+    'Número de teléfono',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +52,12 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ) 
+                    );
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -79,19 +68,19 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               ),
               const SizedBox(
                 width: 330,
-                height: 50,
-                child: Text("Datos del Tutor", 
+                height: 60,
+                child: Text("Seleccionar la forma de enviar el código", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
                   )
                 )
               ),
-              const SizedBox(
-                width: 330,
-                height: 50,
-                child: Text("Número de celular", style: TextStyle(color: Colors.white))
-              ),
+              // const SizedBox(
+              //   width: 330,
+              //   height: 50,
+              //   child: Text("¿Cuál es el sexo?", style: TextStyle(color: Colors.white))
+              // ),
               Form(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -100,7 +89,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Ingrese su número de celular",
+                      const Text("Seleccione un método",
                         style: TextStyle(
                           color: Color(0xFFd4b0a0),
                           fontSize: 15,
@@ -109,19 +98,32 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      MyTextFormField(
-                        controller: phoneController,
-                        inputTypes: TextInputType.name,
-                        myObscureText: false,
-                        onChanged: (value) {},
-                        suffixicon: null,
-                        hintText: 'Núemero de celular',
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Ingrese su nombre';
-                        //   }
-                        //   return null;
-                        // },
+                      Container(
+                        height: 46, width: 377,
+                        decoration: BoxDecoration (
+                          borderRadius: BorderRadius.circular(5),
+                          color: Color(0xFF9f77df),
+                          border: Border.all(
+                            color: Color(0xFFdbb3a0),
+                            width: 1
+                          )
+                        ),
+                        child: DropdownButton<String>(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          value: selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                          items: items.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          isExpanded: true,
+                        ),
                       ),
                     ],
                   ),
@@ -133,14 +135,13 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () async {
-                  await sendData();
+                onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    await Navigator.push(
-                      context, 
+                    Navigator.pushReplacement(
+                      context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(idPersona: _id)
-                      )
+                        builder: (context) => CodeVerification()
+                      ) 
                     );
                   }
                 },

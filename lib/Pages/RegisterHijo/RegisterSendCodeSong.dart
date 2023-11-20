@@ -1,33 +1,21 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordSong.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPhoneSong.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-class RegisterPhonePage extends StatefulWidget {
-  final int id;
-
-  const RegisterPhonePage({super.key, required this.id});
+class RegisterSendCodeSong extends StatefulWidget {
+  static const routeName = '/registerTutor';
+  const RegisterSendCodeSong({super.key});
 
   @override
-  State<RegisterPhonePage> createState() => _RegisterPhonePage();
+  State<RegisterSendCodeSong> createState() => _RegisterScreenState();
 }
 
-class _RegisterPhonePage extends State<RegisterPhonePage> {
+class _RegisterScreenState extends State<RegisterSendCodeSong> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
   bool _obscureText = true;
-  late int _id;
-
-  @override
-  void initState() {
-    super.initState();
-    _id = widget.id;
-    print(_id);
-  }
 
   // @override
   // void dispose() {
@@ -40,19 +28,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
   // }
 
   void clearControllers() {
-    phoneController.clear();
-  }
-
-  Future<void> sendData() async {
-    final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
-      body: {
-        "telefono": this.phoneController.text,
-        "id": this._id.toString()
-      }
-    );
-    var respuesta = jsonDecode(response.body);
-    print(respuesta);
+    codeController.clear();
   }
 
   @override
@@ -68,7 +44,12 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                 backgroundColor: Color(0xFF4c709a),
                 leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RegisterPhoneSong(),
+                    //   ) 
+                    // );
                   },
                   child: Icon(
                     Icons.arrow_back,
@@ -80,7 +61,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Datos del Tutor", 
+                child: Text("Datos del Hijo", 
                   style: TextStyle(
                     color: Color(0xFF90bbd0),
                     fontSize: 20
@@ -90,7 +71,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               const SizedBox(
                 width: 330,
                 height: 50,
-                child: Text("Número de celular", style: TextStyle(color: Colors.white))
+                child: Text("Enviaremos un código al número de teléfono", style: TextStyle(color: Colors.white))
               ),
               Form(
                 key: _formKey,
@@ -100,7 +81,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Ingrese su número de celular",
+                      const Text("Ingrese el código",
                         style: TextStyle(
                           color: Color(0xFFd4b0a0),
                           fontSize: 15,
@@ -110,12 +91,12 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
                         height: 10,
                       ),
                       MyTextFormField(
-                        controller: phoneController,
+                        controller: codeController,
                         inputTypes: TextInputType.name,
                         myObscureText: false,
                         onChanged: (value) {},
                         suffixicon: null,
-                        hintText: 'Núemero de celular',
+                        hintText: 'Codigo',
                         // validator: (value) {
                         //   if (value == null || value.isEmpty) {
                         //     return 'Ingrese su nombre';
@@ -133,18 +114,17 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
               CustomButton(
                 buttonWidth: 260,
                 buttonHeight: 46,
-                onPressed: () async {
-                  await sendData();
-                  if (_formKey.currentState!.validate()) {
-                    await Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => RegisterCorreoPage(idPersona: _id)
-                      )
-                    );
-                  }
+                onPressed: () {
+                  // if (_formKey.currentState!.validate()) {
+                  //   Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => RegisterPasswordSong()
+                  //     ) 
+                  //   );
+                  // }
                 },
-                text: "Siguiente",
+                text: "Validar",
                 buttonBackgroundColor: Color(0xFF795a9e),
                 style: TextStyle(
                   color: Colors.white,
