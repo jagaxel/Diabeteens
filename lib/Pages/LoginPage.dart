@@ -97,6 +97,15 @@ class _LoginScreenState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Ocurrió un error inesperado, intenté de nuevo",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Color.fromARGB(44, 0, 170, 255),
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
       print(e);
     }
   }

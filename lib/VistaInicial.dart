@@ -62,6 +62,7 @@ class _GetStartedScreenState extends State<VistaInicial> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const LoginPage()
+                      // builder: (context) => LineChartSample3()
                       // builder: (context) => const MenuBtn()
                       // builder: (context) => const EntryPointTutor()
                       // builder: (context) => const MenuTutor(idHijos: "5,6", cantHijos: 2,)
