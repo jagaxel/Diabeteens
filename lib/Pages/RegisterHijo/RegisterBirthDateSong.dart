@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterNameSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterSexSong.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -22,6 +23,8 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
   late int _idPersona;
   late int _idTutor;
   int _edadHijo = 0;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -63,7 +66,7 @@ class _RegisterScreenState extends State<RegisterBirthDateSong> {
   Future<void> sendData() async {
     List<String> fechaC = DateTime(selectedDate.year, selectedDate.month, selectedDate.day).toString().split(" ");
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerBirthDate.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerBirthDate.php'),
       body: {
         "fechaNacimiento": fechaC[0].toString(),
         "edad": _edadHijo.toString(),

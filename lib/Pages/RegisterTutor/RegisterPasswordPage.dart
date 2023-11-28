@@ -2,6 +2,7 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterSavePage.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -25,6 +26,8 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
   late int _idPersona;
   late int _idTutor;
   late String _correo;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -51,7 +54,7 @@ class _RegisterScreenState extends State<RegisterPasswordPage> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPassword.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/registerPassword.php'),
       body: {
         "idTutor": this._idTutor.toString(),
         "correo": _correo,

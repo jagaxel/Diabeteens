@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/SuccessfullRegisterSong.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -26,6 +27,8 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
   late int _idTutor;
   late int _idHijo;
   late String _telefono;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -53,7 +56,7 @@ class _RegisterScreenState extends State<RegisterPasswordSong> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerPassword.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerPassword.php'),
       body: {
         "telefono": _telefono,
         "idHijo": _idHijo.toString(),

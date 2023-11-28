@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -23,6 +24,8 @@ class _RegisterScreenState extends State<RegisterNamSong> {
   bool _obscureText = true;
   int idPersona = 0;
   late int _idTutor;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -49,7 +52,7 @@ class _RegisterScreenState extends State<RegisterNamSong> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerName.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerName.php'),
       body: {
         "nombre": this.nombreController.text,
         "primerApellido": this.primerApellidoController.text,

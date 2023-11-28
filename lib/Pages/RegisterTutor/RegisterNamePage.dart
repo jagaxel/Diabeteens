@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterPhonePage.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -22,6 +23,8 @@ class _RegisterScreenState extends State<RegisterNamePage> {
   bool _obscureText = true;
   int id = 0;
 
+  DirectionIp ip = DirectionIp();
+
   // @override
   // void dispose() {
   //   // Dispose the text editing controllers
@@ -40,7 +43,7 @@ class _RegisterScreenState extends State<RegisterNamePage> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerName.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/registerName.php'),
       body: {
         "nombre": this.nombreController.text,
         "primerApellido": this.primerApellidoController.text,
@@ -49,8 +52,9 @@ class _RegisterScreenState extends State<RegisterNamePage> {
       }
     );
     var respuesta = jsonDecode(response.body);
+    print(respuesta);
     this.id = respuesta["id"];
-    print(this.id);
+    // print(this.id);
   }
 
   @override
@@ -201,7 +205,7 @@ class _RegisterScreenState extends State<RegisterNamePage> {
                 buttonWidth: 260,
                 buttonHeight: 46,
                 onPressed: () async {
-                  // await sendData();
+                  await sendData();
                   if (_formKey.currentState!.validate()) {
                     // await Navigator.pushReplacement(
                     //   context,

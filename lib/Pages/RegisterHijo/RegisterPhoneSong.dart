@@ -3,6 +3,7 @@ import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPoundSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterSendCodeSong.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -25,6 +26,8 @@ class _RegisterScreenState extends State<RegisterPhoneSong> {
   late int _idPersona;
   late int _idTutor;
   late int _idHijo;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -51,7 +54,7 @@ class _RegisterScreenState extends State<RegisterPhoneSong> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerPhone.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerPhone.php'),
       body: {
         "telefono": phoneController.text,
         "id": _idPersona.toString()

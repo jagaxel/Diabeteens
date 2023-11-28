@@ -23,7 +23,7 @@ class MenuTutor extends StatefulWidget {
 
 class _MenuTutorState extends State<MenuTutor> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  RiveAsset selectedMenu = sideMenus.first;
+  RiveAsset selectedMenu = sideMenusTutor.first;
   DirectionIp ip = DirectionIp();
   late String _nombreTutor;
   late String _idHijos;
@@ -88,7 +88,7 @@ class _MenuTutorState extends State<MenuTutor> {
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white70),
                 ),
               ),
-              ...sideMenus.map(
+              ...sideMenusTutor.map(
                 (menu) => SideMenuTileTutor(
                   menu: menu,
                   riveOnInit: (artboard) {

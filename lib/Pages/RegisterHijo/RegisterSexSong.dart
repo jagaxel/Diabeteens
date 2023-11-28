@@ -1,6 +1,7 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPoundSong.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -23,6 +24,8 @@ class _RegisterScreenState extends State<RegisterSexSong> {
   late int _idTutor;
   String sexo = "";
   int _idHijo = 0;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -57,7 +60,7 @@ class _RegisterScreenState extends State<RegisterSexSong> {
   Future<void> sendData() async {
     sexo = selectedValue == "Masculino" ? "M" : "F";
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterHijo/registerSex.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerSex.php'),
       body: {
         "sexo": sexo,
         "idTutor": _idTutor.toString(),

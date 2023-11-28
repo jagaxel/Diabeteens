@@ -59,7 +59,7 @@ List<RiveAsset> bottomNavs = [
   ),
 ];
 
-List<RiveAsset> sideMenus = [
+List<RiveAsset> sideMenusTutor = [
   RiveAsset(
     "assets/riveAssets/iconosAnimados.riv",
     artboard: "HOME",
@@ -83,5 +83,20 @@ List<RiveAsset> sideMenus = [
     artboard: "USER",
     stateMachineName: "USER_Interactivity",
     title: "Usuario"
+  )
+];
+
+List<RiveAsset> sideMenusHijo = [
+  RiveAsset(
+    "assets/riveAssets/iconosAnimados.riv",
+    artboard: "HOME",
+    stateMachineName: "HOME_interactivity",
+    title: "Inicio"
+  ),
+  RiveAsset(
+    "assets/riveAssets/iconosAnimados.riv",
+    artboard: "SEARCH",
+    stateMachineName: "SEARCH_Interactivity",
+    title: "Juego"
   )
 ];

@@ -2,6 +2,7 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/Views/Hijo/EntryPointHijo.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/HomeTutor.dart';
 import 'package:diabeteens_v2/Utils/DirectionIp.dart';
@@ -71,20 +72,35 @@ class _LoginScreenState extends State<LoginPage> {
       var respuesta = jsonDecode(response.body);
       print(respuesta);
       if (respuesta["existe"]) {
-        await Navigator.push(
-          context, 
-          MaterialPageRoute(
-            builder: (context) => EntryPointTutor(
-              idUsuario: int.parse(respuesta["idUsuario"]), 
-              idTutor: int.parse(respuesta["idTutor"]), 
-              idPersona: int.parse(respuesta["idPersona"]),
-              usuario: respuesta["usuario"],
-              nombreCompleto: respuesta["nombreCompleto"],
-              idHijos: respuesta["idHijos"],
-              cantHijos: int.parse(respuesta["cantHijos"]),
+        if (respuesta["isTutor"]) {
+          await Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => EntryPointTutor(
+                idUsuario: int.parse(respuesta["idUsuario"]), 
+                idTutor: int.parse(respuesta["idTutor"]), 
+                idPersona: int.parse(respuesta["idPersona"]),
+                usuario: respuesta["usuario"],
+                nombreCompleto: respuesta["nombreCompleto"],
+                idHijos: respuesta["idHijos"],
+                cantHijos: int.parse(respuesta["cantHijos"]),
+              )
             )
-          )
-        );
+          );
+        } else {
+          await Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => EntryPointHijo(
+                idUsuario: int.parse(respuesta["idUsuario"]), 
+                idHijo: int.parse(respuesta["idHijo"]), 
+                idPersona: int.parse(respuesta["idPersona"]),
+                usuario: respuesta["usuario"],
+                nombreCompleto: respuesta["nombreCompleto"],
+              )
+            )
+          );
+        }
       } else {
         Fluttertoast.showToast(
           msg: "Usuario o contraseña incorrecta",

@@ -2,6 +2,7 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterCorreoPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -21,6 +22,8 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
   TextEditingController phoneController = TextEditingController();
   bool _obscureText = true;
   late int _id;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -45,7 +48,7 @@ class _RegisterPhonePage extends State<RegisterPhonePage> {
 
   Future<void> sendData() async {
     final response = await http.post(
-      Uri.parse('http://localhost/api_diabeteens/RegisterTutor/registerPhone.php'),
+      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/registerPhone.php'),
       body: {
         "telefono": this.phoneController.text,
         "id": this._id.toString()
