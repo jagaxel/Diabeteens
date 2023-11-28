@@ -56,8 +56,8 @@ class _HomeHijoState extends State<HomeHijo> {
         onPressed: () {
           setState(() {
             value = index;
+            getComida();
           });
-          getComida();
         },
         child: Text(
           text,
@@ -80,28 +80,7 @@ class _HomeHijoState extends State<HomeHijo> {
     );
   }
 
-  List<Image> listComida = [
-    Image(
-      image: AssetImage("assets/images/beverages/apple-juice.png"),
-      width: 15,
-    ),
-    Image(
-      image: AssetImage("assets/images/beverages/chamomile-tea.png"),
-      width: 15,
-    ),
-    Image(
-      image: AssetImage("assets/images/beverages/chocolate-milkshake.png"),
-      width: 15,
-    ),
-    Image(
-      image: AssetImage("assets/images/beverages/lemon-juice.png"),
-      width: 15,
-    ),
-    Image(
-      image: AssetImage("assets/images/beverages/lemon-tea.png"),
-      width: 15,
-    ),
-  ];
+  List<Image> listComida = [];
   void getComida() async {
     try {
       listComida = [];
@@ -112,16 +91,14 @@ class _HomeHijoState extends State<HomeHijo> {
         }
       );
       var respuesta = jsonDecode(response.body);
-      print(respuesta);
-      // for (int i = 0; i < respuesta.length; i++) {
-      //   print(respuesta[i]["src"]);
-      //   listComida.add(
-      //     Image(
-      //       image: AssetImage(respuesta[i]["src"]),
-      //       width: 15,
-      //     )
-      //   );
-      // }
+      // print(respuesta);
+      for (int i = 0; i < respuesta.length; i++) {
+        listComida.add(
+          Image(
+            image: AssetImage(respuesta[i]["src"]),
+          )
+        );
+      }
     } catch (e) {
       print(e);
     }
@@ -231,7 +208,7 @@ class _HomeHijoState extends State<HomeHijo> {
                 Container(
                   margin: const EdgeInsets.only(top: 30),
                   width: double.infinity,
-                  height: 450,
+                  height: 500,
                   child: PageView.builder(
                     itemCount: icons.length,
                     controller: pageController,
@@ -312,11 +289,12 @@ class _HomeHijoState extends State<HomeHijo> {
                           Container(
                             margin: const EdgeInsets.only(left: 6, right: 6),
                             width: double.infinity,
-                            height: 10,
+                            height: 70,
                             child: ListView(
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               children: listComida,
+                              
                             ),
                           )
                           :
@@ -333,31 +311,6 @@ class _HomeHijoState extends State<HomeHijo> {
           )
         ]
       ),
-      // body: SafeArea(
-      //   bottom: false,
-      //   child: SingleChildScrollView(
-      //     child: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         SizedBox(
-      //           height: 40,
-      //         ),
-      //         Padding(
-      //           padding: EdgeInsets.all(20),
-      //           child: Text("Opciones"),
-      //         ),
-      //         SingleChildScrollView(
-      //           scrollDirection: Axis.horizontal,
-      //           child: Row(
-      //             children: [
-      //               Text("Gráfica")
-      //             ],
-      //           ),
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

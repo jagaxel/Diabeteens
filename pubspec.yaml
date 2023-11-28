@@ -68,6 +68,15 @@ flutter:
   assets:
     - assets/images/
     - assets/riveAssets/
+    - assets/images/beverages/
+    - assets/images/deportes/
+    - assets/images/dessert/
+    - assets/images/drugs/
+    - assets/images/foods/
+    - assets/images/fruits/
+    - assets/images/kandies/
+    - assets/images/meats/
+    - assets/images/vegetables/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
