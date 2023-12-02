@@ -1,4 +1,5 @@
 import 'package:diabeteens_v2/Models/RiveAsset.dart';
+import 'package:diabeteens_v2/Pages/Videojuego/game_page.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/InfoMenuCardHijo.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/SideMenuTileHijo.dart';
 import 'package:diabeteens_v2/Utils/DirectionIp.dart';
@@ -69,6 +70,13 @@ class _MenuHijoState extends State<MenuHijo> {
                     setState(() {
                       selectedMenu = menu;
                     });
+
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => SnakeGamePage()
+                      )
+                    );
                   },
                   isActive: selectedMenu == menu,
                 )

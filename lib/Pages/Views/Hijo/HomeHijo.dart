@@ -45,7 +45,8 @@ class _HomeHijoState extends State<HomeHijo> {
   ];
 
   int current = 0;
-  int value = 1;
+  int value = 0;
+  int selectComida = 0;
 
   PageController pageController = PageController();
 
@@ -56,7 +57,7 @@ class _HomeHijoState extends State<HomeHijo> {
         onPressed: () {
           setState(() {
             value = index;
-            getComida();
+            // getComida();
           });
         },
         child: Text(
@@ -80,34 +81,117 @@ class _HomeHijoState extends State<HomeHijo> {
     );
   }
 
-  List<Image> listComida = [];
+  List<List<String>> listComidas = [];
   void getComida() async {
     try {
-      listComida = [];
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getComida.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
         body: {
-          "tipoComida": value.toString(),
+          "tipoGet": "1"
         }
       );
       var respuesta = jsonDecode(response.body);
       // print(respuesta);
+      List<String> comidas = [];
+      int tipoComida = 0;
       for (int i = 0; i < respuesta.length; i++) {
-        listComida.add(
-          Image(
-            image: AssetImage(respuesta[i]["src"]),
-          )
-        );
+        if (tipoComida == 0) {
+          tipoComida = int.parse(respuesta[i]["idTipoIngesta"]);
+        } else if (int.parse(respuesta[i]["idTipoIngesta"]) != tipoComida) {
+          listComidas.add(comidas);
+          tipoComida = int.parse(respuesta[i]["idTipoIngesta"]);
+          comidas = [];
+        }
+        comidas.add(respuesta[i]["src"]);
+        if ((i + 1) >= respuesta.length) {
+          listComidas.add(comidas);
+        }
       }
     } catch (e) {
       print(e);
     }
   }
 
+  List<String> listMedicamento = [];
+  void getMedicamento() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
+        body: {
+          "tipoGet": "2"
+        }
+      );
+      var respuesta = jsonDecode(response.body);
+      for (int i = 0; i < respuesta.length; i++) {
+        listMedicamento.add(respuesta[i]["src"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  List<String> listDeportes = [];
+  void getDeportes() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
+        body: {
+          "tipoGet": "3"
+        }
+      );
+      var respuesta = jsonDecode(response.body);
+      for (int i = 0; i < respuesta.length; i++) {
+        listDeportes.add(respuesta[i]["src"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> showDialogSelected(tipo) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(tipo == 1 ? "Comida seleccionada" : (tipo == 2 ? "Medicamento seleccionado" : (tipo == 3 ? "Deporte seleccionado" : ""))),
+          content: Column(
+            children: [
+              SizedBox(
+                height: 15,
+              ),
+              Image(image: AssetImage(tipo == 1 ? listComidas[value][selectComida] : (tipo == 2 ? listMedicamento[selectComida] : (tipo == 3 ? listDeportes[selectComida] : "")))),
+              SizedBox(
+                height: 15,
+              ),
+              Text(tipo == 1 ? "Ingresa la cantidad consumida" : (tipo == 2 ? "Ingresa la cantidad inyectada" : (tipo == 3 ? "Selecciona el tiempo jugado" : ""))),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Registrar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     getComida();
+    getMedicamento();
+    getDeportes();
   }
 
   @override
@@ -258,13 +342,13 @@ class _HomeHijoState extends State<HomeHijo> {
                                 physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
-                                  CustomRadioButton("Bebidas", 1),
-                                  CustomRadioButton("Carnes", 2),
-                                  CustomRadioButton("Dulces", 4),
-                                  CustomRadioButton("Frutas", 6),
-                                  CustomRadioButton("Postres", 8),
-                                  CustomRadioButton("Verduras", 9),
-                                  CustomRadioButton("Otros Alimentos", 3)
+                                  CustomRadioButton("Bebidas", 0),
+                                  CustomRadioButton("Carnes", 1),
+                                  CustomRadioButton("Dulces", 3),
+                                  CustomRadioButton("Frutas", 4),
+                                  CustomRadioButton("Postres", 5),
+                                  CustomRadioButton("Verduras", 6),
+                                  CustomRadioButton("Otros Alimentos", 2)
                                 ],
                               ),
                             )
@@ -285,16 +369,78 @@ class _HomeHijoState extends State<HomeHijo> {
                           const SizedBox(
                             height: 15,
                           ),
+                          current == 2 ?
+                          Container(
+                            margin: const EdgeInsets.only(left: 6, right: 6),
+                            width: double.infinity,
+                            height: 70,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: listMedicamento.length,
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      print("Seleccionó una ingesta");
+                                      setState(() {
+                                        selectComida = index;
+                                      });
+                                      showDialogSelected(2);
+                                    },
+                                    child: Image(image: AssetImage(listMedicamento[index])),
+                                  );
+                              },
+                            ),
+                          )
+                          :
                           current == 3 ?
                           Container(
                             margin: const EdgeInsets.only(left: 6, right: 6),
                             width: double.infinity,
                             height: 70,
-                            child: ListView(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: listComidas[value].length,
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              children: listComida,
-                              
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      print("Seleccionó una ingesta");
+                                      setState(() {
+                                        selectComida = index;
+                                      });
+                                      showDialogSelected(1);
+                                    },
+                                    child: Image(image: AssetImage(listComidas[value][index])),
+                                  );
+                              },
+                            ),
+                          )
+                          :
+                          current == 4 ?
+                          Container(
+                            margin: const EdgeInsets.only(left: 6, right: 6),
+                            width: double.infinity,
+                            height: 70,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: listDeportes.length,
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      print("Seleccionó una ingesta");
+                                      setState(() {
+                                        selectComida = index;
+                                      });
+                                      showDialogSelected(3);
+                                    },
+                                    child: Image(image: AssetImage(listDeportes[index])),
+                                  );
+                              },
                             ),
                           )
                           :
