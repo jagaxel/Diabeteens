@@ -20,18 +20,76 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   List<int> snakePosition = [];
   int snakeHead = 0;
   int score = 0;
-  int candyPosition = -1; // Posición inicial fuera de la pantalla
+  int candyPosition = -1;
   bool candyActive = false;
   bool gameActive = true;
   late Direction direction;
   late int foodPosition;
   late List<Question> questions;
-
+  int currentScore = 0;
+  static const int snakeSpeed = 300;
+  
   @override
   void initState() {
-    startGame();
+    foodPosition = _generateRandomPosition();
+    _showStartScreen();
     questions = _generateQuestions();
     super.initState();
+  }
+
+  void _showStartScreen() async {
+    await Future.delayed(Duration.zero);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("¡Ayuda a Snake a comer sanamente!"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/videogame/snake.png',
+                height: 100,
+              ),
+              const SizedBox(height: 20),
+              const Text("Su comida favorita son las frutas y lo ayudan a crecer."),
+              Image.asset(
+                'assets/images/fruits/apple.png',
+                height: 80,
+              ),
+              const Text("Evita los dulces, son dañinos para la salud."),
+              Image.asset(
+                'assets/images/Kandies/candy.png',
+                height: 80,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Nota: Si comes algún dulce, reiniciaras el juego con más velocidad por el azúcar, ¡ten cuidado!",
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "¿Cuántos puntos podrás conseguir?",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                startGame();
+              },
+              child: const Text("Continuar"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void startGame() {
@@ -42,7 +100,8 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
     snakeHead = snakePosition.first;
     score = 0;
     gameActive = true;
-    Timer.periodic(const Duration(milliseconds: 300), (timer) {
+    candyActive = false;
+    Timer.periodic(const Duration(milliseconds: snakeSpeed), (timer) {
       if (gameActive) {
         updateSnake();
         if (checkCollision()) {
@@ -69,14 +128,11 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
 
     if (answerCorrect != null) {
       if (answerCorrect) {
-        // Respuesta correcta, reiniciar juego con los mismos puntos
-        startGame();
+        await showSuccessScreen(score);
       } else {
-        // Respuesta incorrecta, mostrar pantalla de respuesta correcta
         await showAnswerDialog(selectedQuestion);
       }
     } else {
-      // Si el usuario cierra el quiz sin responder, finaliza la aplicación
       exitGame();
     }
   }
@@ -93,26 +149,125 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
         return AlertDialog(
           title: const Text("Respuesta Incorrecta"),
           content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("La respuesta correcta es:"),
-              Text(question.correctAnswer),
+              Image.asset(
+                'assets/images/videogame/wrong.png',
+                height: 100,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "La respuesta correcta es:",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                question.correctAnswer,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // Pregunta si desea volver a jugar
-                showReplayDialog();
+                exitGame();
               },
-              child: const Text("Volver a Jugar"),
+              child: const Text("Salir", style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                exitGame();
+                showReplayDialog();
               },
-              child: const Text("Salir"),
+              child: const Text("Volver a Jugar", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showSuccessScreen(int score) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/videogame/success.png',
+                height: 100,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                '¡Bien hecho, ahora tienes otra oportunidad!',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Aún conservas tus puntos',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Puntuación actual: $score',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // Reinicia la posición de la serpiente y continúa el juego
+                setState(() {
+                  snakePosition = [45, 44, 43];
+                  snakeHead = snakePosition.first;
+                  direction = Direction.right;
+                });
+                gameActive = true;
+                Timer.periodic(const Duration(milliseconds: snakeSpeed), (timer) {
+                  if (gameActive) {
+                    updateSnake();
+                    if (checkCollision()) {
+                      timer.cancel();
+                      showGameOverDialog();
+                    }
+                    checkCandyCollision();
+                    if (!candyActive) {
+                      generateCandy();
+                    }
+                  }
+                });
+              },
+              child: const Text(
+                'Continuar',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
@@ -131,7 +286,6 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // Vuelve a jugar
                 score = 0;
                 startGame();
               },
@@ -157,26 +311,24 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   }
 
   void generateFood() {
-    foodPosition = Random().nextInt(row * column);
-    if (borderList.contains(foodPosition) ||
-        snakePosition.contains(foodPosition) ||
-        (candyActive && candyPosition == foodPosition)) {
-      generateFood();
-    }
+    foodPosition = _generateRandomPosition();
   }
 
   void generateCandy() {
-    candyPosition = Random().nextInt(row * column);
-    if (borderList.contains(candyPosition) ||
-        snakePosition.contains(candyPosition) ||
-        candyPosition == foodPosition) {
-      generateCandy();
-    }
+    candyPosition = _generateRandomPosition();
     candyActive = true;
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 8), () {
       candyActive = false;
       generateCandy();
     });
+  }
+
+  int _generateRandomPosition() {
+    int position;
+    do {
+      position = Random().nextInt(row * column);
+    } while (snakePosition.contains(position) || borderList.contains(position));
+    return position;
   }
 
   void updateSnake() {
@@ -201,7 +353,6 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
       score++;
       generateFood();
     } else if (candyActive && snakeHead == candyPosition) {
-      // Colisión con el caramelo
       showGameOverDialog();
     } else {
       snakePosition.removeLast();
@@ -212,7 +363,6 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
 
   void checkCandyCollision() {
     if (candyActive && snakeHead == candyPosition) {
-      // Colisión con el caramelo
       showGameOverDialog();
     }
   }
@@ -244,6 +394,31 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
         ["a) Comer más dulces", "b) Beber más agua", "c) Administrar insulina según las indicaciones del médico", "d) Ignorar los niveles altos"],
         "c) Administrar insulina según las indicaciones del médico",
       ),
+      Question(
+        "¿Qué parte del cuerpo produce insulina?",
+        ["a) Riñones", "b) Páncreas", "c) Corazón", "d) Estómago"],
+        "b) Páncreas",
+      ),
+      Question(
+        "¿Qué hace la insulina en el cuerpo?",
+        ["a) Regula el azúcar en la sangre", "b) Produce energía", "c) Hace crecer el cabello", "d) Da color a la piel"],
+        "a) Regula el azúcar en la sangre",
+      ),
+      Question(
+        "¿Cómo se llama la herramienta que se usa para medir el nivel de azúcar en la sangre?",
+        ["a) Termómetro", "b) Glucómetro", "c) Regla", "d) Binocular"],
+        "b) Glucómetro",
+      ),
+      Question(
+        "¿Cuándo es importante tomar insulina?",
+        ["a) Solo en la noche", "b) Cuando los niveles de azúcar son altos", "c) Solo en días de fiesta", "d) Nunca es importante"],
+        "b) Cuando los niveles de azúcar son altos",
+      ),
+      Question(
+        "¿Por qué es importante llevar un registro de los niveles de azúcar?",
+        ["a) Para jugar", "b) Para mostrar a los amigos", "c) Para compartir en redes sociales", "d) Para ayudar al médico a entender y manejar la diabetes"],
+        "d) Para ayudar al médico a entender y manejar la diabetes",
+      ),
     ];
   }
 
@@ -258,8 +433,7 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
 
   Widget _buildGameView() {
     return GridView.builder(
-      gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: column),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: column),
       itemBuilder: (context, index) {
         return _buildGridItem(index);
       },
@@ -269,19 +443,22 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
 
   Widget _buildGameControls() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Puntaje : $score"),
-          IconButton(
-            onPressed: () {
-              if (direction != Direction.down) direction = Direction.up;
-            },
-            icon: const Icon(Icons.arrow_circle_up),
-            iconSize: 80,
-          ),
+    padding: const EdgeInsets.all(20),
+    width: double.infinity,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Puntaje : $score",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+        ),
+        IconButton(
+          onPressed: () {
+            if (direction != Direction.down) direction = Direction.up;
+          },
+          icon: const Icon(Icons.arrow_circle_up),
+          iconSize: 80,
+        ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -352,8 +529,29 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   }
 
   Widget _buildFoodBox() {
+    List<String> fruitImages = [
+      "assets/images/fruits/apple.png",
+      "assets/images/fruits/avocado.png",
+      "assets/images/fruits/banana.png",
+      "assets/images/fruits/blackberry.png",
+      "assets/images/fruits/cucumber.png",
+      "assets/images/fruits/guava.png",
+      "assets/images/fruits/lemon.png",
+      "assets/images/fruits/mango.png",
+      "assets/images/fruits/melon.png",
+      "assets/images/fruits/orange.png",
+      "assets/images/fruits/papaya.png",
+      "assets/images/fruits/peach.png",
+      "assets/images/fruits/pear.png",
+      "assets/images/fruits/strawberry.png",
+      "assets/images/fruits/watermelon.png",
+      "assets/images/fruits/yam.png",
+    ];
+
+    String currentFruitImage = fruitImages[foodPosition % fruitImages.length];
+
     return Image.asset(
-      "assets/images/videogame/fruit.png",
+      currentFruitImage,
       width: double.infinity,
       height: double.infinity,
       fit: BoxFit.cover,
@@ -361,8 +559,23 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   }
 
   Widget _buildCandyBox() {
+    List<String> candyImages = [
+      "assets/images/dessert/cake.png",
+      "assets/images/dessert/cookie.png",
+      "assets/images/dessert/donut.png",
+      "assets/images/dessert/ice-cream.png",
+      "assets/images/dessert/muffin.png",
+      "assets/images/dessert/popsicle.png",
+      "assets/images/Kandies/candy.png",
+      "assets/images/Kandies/chewing-gum.png",
+      "assets/images/Kandies/lollipop.png",
+      "assets/images/Kandies/popcorn.png",
+    ];
+
+    String currentCandyImage = candyImages[candyPosition % candyImages.length];
+
     return Image.asset(
-      "assets/images/videogame/candy.png",
+      currentCandyImage,
       width: double.infinity,
       height: double.infinity,
       fit: BoxFit.cover,
@@ -428,7 +641,7 @@ class QuizScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
@@ -447,33 +660,39 @@ class QuizScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Image.asset(
-                    'assets/images/videogame/quiz.png', // Ajusta la ruta según la ubicación de tu imagen
-                    height: 100, // Ajusta la altura de la imagen según tus necesidades
+                    'assets/images/videogame/quiz.png',
+                    height: 100,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     question.questionText,
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.blue),
                   ),
                   const SizedBox(height: 20),
                   const Text(
                     'Opciones:',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   ...question.options.map((option) => ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context, option == question.correctAnswer);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        child: Text(
-                          option,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      )),
+                    onPressed: () {
+                      Navigator.pop(context, option == question.correctAnswer);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blueAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      minimumSize: Size(double.infinity, 50),
+                      alignment: Alignment.center,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: Colors.white, width: 2),
+                      ),
+                    ),
+                    child: Text(
+                      option,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),),
                 ],
               ),
             ),
@@ -492,7 +711,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: QuizScreen(quizQuestions[0] as Question), // Muestra la primera pregunta del quiz
+      home: QuizScreen(quizQuestions[0] as Question),
     );
   }
 }
