@@ -81,7 +81,7 @@ class _EntryPointHijoState extends State<EntryPointHijo> with SingleTickerProvid
             width: 288,
             left: isSideMenuClosed ? -288 : 0,
             height: MediaQuery.of(context).size.height,
-            child:  MenuHijo(nombreHijo: _nombreCompleto)
+            child:  MenuHijo(nombreHijo: _nombreCompleto, idHijo: _idHijo)
           ),
           SizedBox(
             height: 80,
@@ -93,9 +93,9 @@ class _EntryPointHijoState extends State<EntryPointHijo> with SingleTickerProvid
               offset: Offset(animation.value * 265, 0),
               child: Transform.scale(
                 scale: scaleAnimation.value,
-                child: const ClipRRect(
+                child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(24)),
-                  child: HomeHijo()
+                  child: HomeHijo(idUsuario: _idUsuario)
                 )
               ),
           

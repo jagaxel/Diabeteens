@@ -66,12 +66,12 @@ List<RiveAsset> sideMenusTutor = [
     stateMachineName: "HOME_interactivity",
     title: "Inicio"
   ),
-  RiveAsset(
-    "assets/riveAssets/iconosAnimados.riv",
-    artboard: "SEARCH",
-    stateMachineName: "SEARCH_Interactivity",
-    title: "Búsqueda"
-  ),
+  // RiveAsset(
+  //   "assets/riveAssets/iconosAnimados.riv",
+  //   artboard: "SEARCH",
+  //   stateMachineName: "SEARCH_Interactivity",
+  //   title: "Búsqueda"
+  // ),
   RiveAsset(
     "assets/riveAssets/iconosAnimados.riv",
     artboard: "BELL",
@@ -80,10 +80,22 @@ List<RiveAsset> sideMenusTutor = [
   ),
   RiveAsset(
     "assets/riveAssets/iconosAnimados.riv",
-    artboard: "USER",
-    stateMachineName: "USER_Interactivity",
-    title: "Usuario"
-  )
+    artboard: "TIMER",
+    stateMachineName: "TIMER_Interactivity",
+    title: "Historial de registros"
+  ),
+  RiveAsset(
+    "assets/riveAssets/iconosAnimados.riv",
+    artboard: "REFRESH/RELOAD",
+    stateMachineName: "RELOAD_Interactivity",
+    title: "Salir"
+  ),
+  // RiveAsset(
+  //   "assets/riveAssets/iconosAnimados.riv",
+  //   artboard: "USER",
+  //   stateMachineName: "USER_Interactivity",
+  //   title: "Usuario"
+  // )
 ];
 
 List<RiveAsset> sideMenusHijo = [
@@ -95,8 +107,20 @@ List<RiveAsset> sideMenusHijo = [
   ),
   RiveAsset(
     "assets/riveAssets/iconosAnimados.riv",
-    artboard: "SEARCH",
-    stateMachineName: "SEARCH_Interactivity",
+    artboard: "LIKE/STAR",
+    stateMachineName: "STAR_Interactivity",
     title: "Juego"
-  )
+  ),
+  RiveAsset(
+    "assets/riveAssets/iconosAnimados.riv",
+    artboard: "TIMER",
+    stateMachineName: "TIMER_Interactivity",
+    title: "Historial de registros"
+  ),
+  RiveAsset(
+    "assets/riveAssets/iconosAnimados.riv",
+    artboard: "REFRESH/RELOAD",
+    stateMachineName: "RELOAD_Interactivity",
+    title: "Salir"
+  ),
 ];

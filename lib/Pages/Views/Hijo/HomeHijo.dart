@@ -1,3 +1,4 @@
+import 'package:diabeteens_v2/Pages/Videojuego/game_page.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,17 +6,19 @@ import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeHijo extends StatefulWidget {
-  const HomeHijo({super.key});
+  final int idUsuario;
+  const HomeHijo({super.key, required this.idUsuario});
 
   @override
   State<HomeHijo> createState() => _HomeHijoState();
 }
 
 class _HomeHijoState extends State<HomeHijo> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DirectionIp ip = DirectionIp();
+  late int _idUsuario;
 
   List<String> items = [
     "Inicio",
@@ -24,6 +27,16 @@ class _HomeHijoState extends State<HomeHijo> {
     "Comida",
     "Deportes",
     "Videojuego"
+  ];
+
+  List<String> tiposComida = [
+    "Bebida",
+    "Carne",
+    "Comida",
+    "Dulce",
+    "Fruta",
+    "Postre",
+    "Verdura",
   ];
 
   /// List of body icon
@@ -57,7 +70,6 @@ class _HomeHijoState extends State<HomeHijo> {
         onPressed: () {
           setState(() {
             value = index;
-            // getComida();
           });
         },
         child: Text(
@@ -81,7 +93,8 @@ class _HomeHijoState extends State<HomeHijo> {
     );
   }
 
-  List<List<String>> listComidas = [];
+  List<List<String>> listSrcComidas = [];
+  List<List<String>> listNameComidas = [];
   void getComida() async {
     try {
       final response = await http.post(
@@ -93,18 +106,23 @@ class _HomeHijoState extends State<HomeHijo> {
       var respuesta = jsonDecode(response.body);
       // print(respuesta);
       List<String> comidas = [];
+      List<String> nombreComidas = [];
       int tipoComida = 0;
       for (int i = 0; i < respuesta.length; i++) {
         if (tipoComida == 0) {
           tipoComida = int.parse(respuesta[i]["idTipoIngesta"]);
         } else if (int.parse(respuesta[i]["idTipoIngesta"]) != tipoComida) {
-          listComidas.add(comidas);
+          listSrcComidas.add(comidas);
+          listNameComidas.add(nombreComidas);
           tipoComida = int.parse(respuesta[i]["idTipoIngesta"]);
           comidas = [];
+          nombreComidas = [];
         }
         comidas.add(respuesta[i]["src"]);
+        nombreComidas.add(respuesta[i]["nombre"]);
         if ((i + 1) >= respuesta.length) {
-          listComidas.add(comidas);
+          listSrcComidas.add(comidas);
+          listNameComidas.add(nombreComidas);
         }
       }
     } catch (e) {
@@ -112,7 +130,8 @@ class _HomeHijoState extends State<HomeHijo> {
     }
   }
 
-  List<String> listMedicamento = [];
+  List<String> listSrcMedicamento = [];
+  List<String> listNameMedicamento = [];
   void getMedicamento() async {
     try {
       final response = await http.post(
@@ -123,14 +142,16 @@ class _HomeHijoState extends State<HomeHijo> {
       );
       var respuesta = jsonDecode(response.body);
       for (int i = 0; i < respuesta.length; i++) {
-        listMedicamento.add(respuesta[i]["src"]);
+        listSrcMedicamento.add(respuesta[i]["src"]);
+        listNameMedicamento.add(respuesta[i]["nombre"]);
       }
     } catch (e) {
       print(e);
     }
   }
 
-  List<String> listDeportes = [];
+  List<String> listSrcDeportes = [];
+  List<String> listNameDeportes = [];
   void getDeportes() async {
     try {
       final response = await http.post(
@@ -141,46 +162,249 @@ class _HomeHijoState extends State<HomeHijo> {
       );
       var respuesta = jsonDecode(response.body);
       for (int i = 0; i < respuesta.length; i++) {
-        listDeportes.add(respuesta[i]["src"]);
+        listSrcDeportes.add(respuesta[i]["src"]);
+        listNameDeportes.add(respuesta[i]["nombre"]);
       }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> showDialogSelected(tipo) async {
+  void showDialogSelected(tipo) async {
+    print(value);
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(tipo == 1 ? "Comida seleccionada" : (tipo == 2 ? "Medicamento seleccionado" : (tipo == 3 ? "Deporte seleccionado" : ""))),
-          content: Column(
-            children: [
-              SizedBox(
-                height: 15,
+      builder: (BuildContext context) {
+        int cantidad = 1;
+        final cantidadLibre = TextEditingController();
+        bool inInput = false;
+
+        void addIngesta() async {
+          try {
+            String tipoIngesta = (tipo == 0 ? 76 : (value + 1)).toString();
+            if (tipo != 1) {
+              cantidad = int.parse(cantidadLibre.text);
+            }
+            final response = await http.post(
+              Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/addIngesta.php'),
+              body: {
+                "idUsuario": _idUsuario.toString(),
+                "tipoIngesta": tipoIngesta,
+                "cantidad": cantidad.toString(),
+              }
+            );
+            var respuesta = jsonDecode(response.body);
+            // print(respuesta);
+            if (respuesta["accion"]) {
+              Fluttertoast.showToast(
+                msg: tipo == 0 ? "Glucosa guardada con éxito :)" : tipo == 1 ? "${tiposComida[value]} guardada con éxito :)" : (tipo == 2 ? "Medicamento guarado con éxito :)" : (tipo == 3 ? "Deporte guardado con éxito :)" : "")),
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIosWeb: 2,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0
+              );
+              Navigator.pop(context);
+            } else {
+              Fluttertoast.showToast(
+                msg: "Intente de nuevo más tarde",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIosWeb: 2,
+                backgroundColor: Color.fromARGB(44, 255, 0, 0),
+                textColor: Colors.white,
+                fontSize: 16.0
+              );
+            }
+            
+          } catch (e) {
+            print(e);
+          }
+        }
+        
+        void showConfirmRegistro() async {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirmación"),
+                content: Text(
+                  "¿Realizar registro?",
+                  style: TextStyle(
+                    fontSize: 17,
+                    // fontWeight: FontWeight.bold
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancelar"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      addIngesta();
+                    },
+                    child: const Text("Confirmar"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(tipo == 0 ? "Registro de glucosa" : tipo == 1 ? "${tiposComida[value]} seleccionada" : (tipo == 2 ? "Medicamento seleccionado" : (tipo == 3 ? "Deporte seleccionado" : ""))),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 15,
+                    ),
+                    inInput ?
+                    // ignore: dead_code
+                    Image(
+                      height: 150,
+                      image: AssetImage(tipo == 0 ? 'assets/images/glucose/medidor-de-glucosa.png' : tipo == 1 ? listSrcComidas[value][selectComida] : (tipo == 2 ? listSrcMedicamento[selectComida] : (tipo == 3 ? listSrcDeportes[selectComida] : "")))
+                    )
+                    :
+                    Image(
+                      image: AssetImage(tipo == 0 ? 'assets/images/glucose/medidor-de-glucosa.png' : tipo == 1 ? listSrcComidas[value][selectComida] : (tipo == 2 ? listSrcMedicamento[selectComida] : (tipo == 3 ? listSrcDeportes[selectComida] : "")))
+                    )
+                    ,SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      tipo == 1 ? listNameComidas[value][selectComida] : (tipo == 2 ? listNameMedicamento[selectComida] : (tipo == 3 ? listNameDeportes[selectComida] : "")),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(tipo == 0 ? "Ingresa la cantidad medida" : tipo == 1 ? "Ingresa la cantidad consumida" : (tipo == 2 ? "Ingresa la cantidad suministrada" : (tipo == 3 ? "Ingresa el tiempo jugado" : ""))),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    tipo == 1 ?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            // decrementCounter();
+                            if (cantidad > 1) {
+                              setState(() {
+                                cantidad -= 1;
+                              });
+                            }
+                          }, 
+                          child: Center(
+                            child: Icon(
+                              Icons.remove,
+                              size: 15,
+                            )
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.grey,
+                              width: 2,
+                            ), //permite cambiar el color del border
+                            primary: Colors.black, //Cambia el color del texto del boton
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40))
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('${cantidad}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            // incrementCounter();
+                            setState(() {
+                              cantidad += 1;
+                            });
+                          }, 
+                          child: Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 15,
+                            )
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.grey,
+                              width: 2,
+                            ), //permite cambiar el color del border
+                            primary: Colors.black, //Cambia el color del texto del boton
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40))
+                            ),
+                          ),
+                        ),
+                      ]
+                    )
+                    :
+                    Container(
+                      width: 300,
+                      child: TextField(
+                        obscureText: false,
+                        keyboardType: TextInputType.number,
+                        controller: cantidadLibre,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5)
+                          ),
+                          labelText: 'Cantidad'
+                        ),
+                        onTap: () {
+                          setState(() {
+                            inInput = true;
+                          });
+                        },
+                        onTapOutside: (event) {
+                          setState(() {
+                            inInput = false;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+                
               ),
-              Image(image: AssetImage(tipo == 1 ? listComidas[value][selectComida] : (tipo == 2 ? listMedicamento[selectComida] : (tipo == 3 ? listDeportes[selectComida] : "")))),
-              SizedBox(
-                height: 15,
-              ),
-              Text(tipo == 1 ? "Ingresa la cantidad consumida" : (tipo == 2 ? "Ingresa la cantidad inyectada" : (tipo == 3 ? "Selecciona el tiempo jugado" : ""))),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Cancelar"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Registrar"),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancelar"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Navigator.pop(context);
+                    // addIngesta();
+                    showConfirmRegistro();
+                  },
+                  child: const Text("Registrar"),
+                ),
+              ],
+            );
+          }
         );
       },
     );
@@ -192,6 +416,7 @@ class _HomeHijoState extends State<HomeHijo> {
     getComida();
     getMedicamento();
     getDeportes();
+    _idUsuario = widget.idUsuario;
   }
 
   @override
@@ -307,12 +532,22 @@ class _HomeHijoState extends State<HomeHijo> {
                             size: 200,
                             color: Colors.white,
                           ))
-                          : 
+                          :
                           current == 5 ?
-                          Icon(
-                            icons[current],
-                            size: 200,
-                            color: Colors.white,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => SnakeGamePage()
+                                )
+                              );
+                            },
+                            child: Icon(
+                              icons[current],
+                              size: 200,
+                              color: Colors.white,
+                            ),
                           )
                           :
                           current == 3 ?
@@ -369,83 +604,59 @@ class _HomeHijoState extends State<HomeHijo> {
                           const SizedBox(
                             height: 15,
                           ),
-                          current == 2 ?
                           Container(
                             margin: const EdgeInsets.only(left: 6, right: 6),
                             width: double.infinity,
                             height: 70,
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: listMedicamento.length,
+                              itemCount: (current == 1 ? 1 : (current == 2 ? listSrcMedicamento.length : (current == 3 ? listNameComidas[value].length : (current == 4 ? listSrcDeportes.length : 0))  )  ),
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                return GestureDetector(
+                                return Tooltip(
+                                  message: current == 1 ? 'Glucosa'
+                                    :
+                                    current == 2 ? listNameMedicamento[index]
+                                    :
+                                    current == 3 ? listNameComidas[value][index]
+                                    :
+                                    current == 4 ? listNameDeportes[index]
+                                    :
+                                    '',
+                                  child: GestureDetector(
                                     onTap: () {
-                                      print("Seleccionó una ingesta");
                                       setState(() {
                                         selectComida = index;
                                       });
-                                      showDialogSelected(2);
+                                      switch (current) {
+                                        case 1: showDialogSelected(0);
+                                          break;
+                                        case 2: showDialogSelected(2);
+                                          break;
+                                        case 3: showDialogSelected(1);
+                                          break;
+                                        case 4: showDialogSelected(3);
+                                          break;
+                                      }
                                     },
-                                    child: Image(image: AssetImage(listMedicamento[index])),
-                                  );
+                                    child: Image(
+                                      image: AssetImage(
+                                        current == 1 ? 'assets/images/glucose/medidor-de-glucosa.png'
+                                        :
+                                        current == 2 ? listSrcMedicamento[index]
+                                        :
+                                        current == 3 ? listSrcComidas[value][index]
+                                        :
+                                        current == 4 ? listSrcDeportes[index]
+                                        :
+                                        ''
+                                      )
+                                    ),
+                                  ),
+                                );
                               },
                             ),
-                          )
-                          :
-                          current == 3 ?
-                          Container(
-                            margin: const EdgeInsets.only(left: 6, right: 6),
-                            width: double.infinity,
-                            height: 70,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: listComidas[value].length,
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      print("Seleccionó una ingesta");
-                                      setState(() {
-                                        selectComida = index;
-                                      });
-                                      showDialogSelected(1);
-                                    },
-                                    child: Image(image: AssetImage(listComidas[value][index])),
-                                  );
-                              },
-                            ),
-                          )
-                          :
-                          current == 4 ?
-                          Container(
-                            margin: const EdgeInsets.only(left: 6, right: 6),
-                            width: double.infinity,
-                            height: 70,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: listDeportes.length,
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      print("Seleccionó una ingesta");
-                                      setState(() {
-                                        selectComida = index;
-                                      });
-                                      showDialogSelected(3);
-                                    },
-                                    child: Image(image: AssetImage(listDeportes[index])),
-                                  );
-                              },
-                            ),
-                          )
-                          :
-                          const SizedBox(
-                            height: 0,
                           )
                         ],
                       );

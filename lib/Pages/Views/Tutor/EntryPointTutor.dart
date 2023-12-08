@@ -7,7 +7,6 @@ import 'package:diabeteens_v2/Utils/RiveUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-// import 'package:rive/rive.dart';
 
 class EntryPointTutor extends StatefulWidget {
   final int idUsuario;
@@ -86,7 +85,7 @@ class _EntryPointTutorState extends State<EntryPointTutor> with SingleTickerProv
             width: 288,
             left: isSideMenuClosed ? -288 : 0,
             height: MediaQuery.of(context).size.height,
-            child:  MenuTutor(nombreTutor: _nombreCompleto, idHijos: _idHijos, cantHijos: _cantHijos)
+            child:  MenuTutor(nombreCompleto: _nombreCompleto, idHijos: _idHijos, cantHijos: _cantHijos, idPersona: _idPersona, idTutor: _idTutor, idUsuario: _idUsuario, usuario: _usuario,)
           ),
           Transform(
             alignment: Alignment.center,
@@ -95,9 +94,9 @@ class _EntryPointTutorState extends State<EntryPointTutor> with SingleTickerProv
               offset: Offset(animation.value * 265, 0),
               child: Transform.scale(
                 scale: scaleAnimation.value,
-                child: const ClipRRect(
+                child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(24)),
-                  child: HomeTutor()
+                  child: HomeTutor(idHijo: int.parse(_idHijos))
                 )
               ),
           
