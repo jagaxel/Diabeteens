@@ -60,7 +60,7 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
               ),
               const Text("Evita los dulces, son dañinos para la salud."),
               Image.asset(
-                'assets/images/Kandies/candy.png',
+                'assets/images/kandies/candy.png',
                 height: 80,
               ),
               const SizedBox(height: 20),
@@ -566,10 +566,10 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
       "assets/images/dessert/ice-cream.png",
       "assets/images/dessert/muffin.png",
       "assets/images/dessert/popsicle.png",
-      "assets/images/Kandies/candy.png",
-      "assets/images/Kandies/chewing-gum.png",
-      "assets/images/Kandies/lollipop.png",
-      "assets/images/Kandies/popcorn.png",
+      "assets/images/kandies/candy.png",
+      "assets/images/kandies/chewing-gum.png",
+      "assets/images/kandies/lollipop.png",
+      "assets/images/kandies/popcorn.png",
     ];
 
     String currentCandyImage = candyImages[candyPosition % candyImages.length];
@@ -679,7 +679,7 @@ class QuizScreen extends StatelessWidget {
                       Navigator.pop(context, option == question.correctAnswer);
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blueAccent,
+                      primary: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                       minimumSize: Size(double.infinity, 50),
                       alignment: Alignment.center,
@@ -688,10 +688,13 @@ class QuizScreen extends StatelessWidget {
                         side: BorderSide(color: Colors.white, width: 2),
                       ),
                     ),
-                    child: Text(
-                      option,
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(
+                        option,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
                   ),),
                 ],
               ),
