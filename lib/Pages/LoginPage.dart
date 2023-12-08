@@ -166,7 +166,7 @@ class _LoginScreenState extends State<LoginPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Correo electrónico",
+                    const Text("Usuario",
                         style: TextStyle(
                           color: Color(0xFFd4b0a0),
                           fontSize: 12,
@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginPage> {
                       inputTypes: TextInputType.emailAddress,
                       myObscureText: false,
                       suffixicon: null,
-                      hintText: 'Correo elctrónico',
+                      hintText: 'Correo (tutor); Telefono (hijo)',
                       // validator: (value) {
                       //   if (value == null || value.isEmpty) {
                       //     return 'Please enter your email';

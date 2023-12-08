@@ -1,5 +1,8 @@
 import 'package:diabeteens_v2/Models/RiveAsset.dart';
+import 'package:diabeteens_v2/Pages/LoginPage.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/HistoryTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/InfoMenuCardTutor.dart';
+import 'package:diabeteens_v2/Pages/Views/Tutor/NotificationsTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/SideMenuTileTutor.dart';
 import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/Utils/RiveUtils.dart';
@@ -12,10 +15,14 @@ import 'package:http/http.dart' as http;
 // import 'package:rive/rive.dart';
 
 class MenuTutor extends StatefulWidget {
-  final String nombreTutor;
+  final int idUsuario;
+  final int idTutor;
+  final int idPersona;
+  final String usuario;
+  final String nombreCompleto;
   final String idHijos;
   final int cantHijos;
-  const MenuTutor({super.key, required this.idHijos, required this.cantHijos, required this.nombreTutor});
+  const MenuTutor({super.key, required this.idUsuario, required this.idTutor, required this.idPersona, required this.usuario, required this.nombreCompleto, required this.idHijos, required this.cantHijos});
 
   @override
   State<MenuTutor> createState() => _MenuTutorState();
@@ -25,7 +32,11 @@ class _MenuTutorState extends State<MenuTutor> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   RiveAsset selectedMenu = sideMenusTutor.first;
   DirectionIp ip = DirectionIp();
-  late String _nombreTutor;
+  late int _idUsuario;
+  late int _idTutor;
+  late int _idPersona;
+  late String _usuario;
+  late String _nombreCompleto;
   late String _idHijos;
   late int _cantHijos;
   // List<String> nombres = ["Miguel Angel Ramirez Mejía", "Litzy Guliane Camacho Ramirez"];
@@ -59,7 +70,11 @@ class _MenuTutorState extends State<MenuTutor> {
 
   @override
   void initState() {
-    _nombreTutor = widget.nombreTutor;
+    _idUsuario = widget.idUsuario;
+    _idTutor = widget.idTutor;
+    _idPersona = widget.idPersona;
+    _usuario = widget.usuario;
+    _nombreCompleto = widget.nombreCompleto;
     _idHijos = widget.idHijos;
     _cantHijos = widget.cantHijos;
     addSideHijos();
@@ -78,7 +93,7 @@ class _MenuTutorState extends State<MenuTutor> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InfoMenuCardTutor(
-                nombre: _nombreTutor, 
+                nombre: _nombreCompleto, 
                 tipoUsuario: "Tutor"
               ),
               Padding(
@@ -103,6 +118,32 @@ class _MenuTutorState extends State<MenuTutor> {
                     setState(() {
                       selectedMenu = menu;
                     });
+                    if (menu.title == "Notificaciones") {
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => NotificationsTutor(cantHijos: _cantHijos, idHijos: _idHijos, idPersona: _idPersona, idTutor: _idTutor, idUsuario: _idUsuario, nombreCompleto: _nombreCompleto, usuario: _usuario,)
+                        )
+                      );
+                    }
+
+                    if (menu.title == "Historial de registros") {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => HistoryTutor(idHijo: _idHijos.toString())
+                        )
+                      );
+                    }
+
+                    if (menu.title == "Salir") {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage()
+                        ) 
+                      );
+                    }
                   },
                   isActive: selectedMenu == menu,
                 )
