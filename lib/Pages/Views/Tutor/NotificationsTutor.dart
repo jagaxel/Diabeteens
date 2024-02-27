@@ -382,6 +382,73 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
     );
   }
 
+  void removeItem(notification) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Eliminar registro"),
+          content: Text(
+            "¿Está seguro de eliminar el registro?",
+            style: TextStyle(
+              fontSize: 17,
+              // fontWeight: FontWeight.bold
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  final response = await http.post(
+                    Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/removeItem.php'),
+                    body: {
+                      "idSeguimiento": notification["id"].toString()
+                    }
+                  );
+                  var respuesta = jsonDecode(response.body);
+                  // print(respuesta);
+                  if (respuesta["accion"]) {
+                    Fluttertoast.showToast(
+                      msg: "Registro eliminado",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 2,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                    );
+                    getNotifications();
+                    Navigator.pop(context);
+                  } else {
+                    Fluttertoast.showToast(
+                      msg: "Intente de nuevo más tarde",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 2,
+                      backgroundColor: Color.fromARGB(44, 255, 0, 0),
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                    );
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: const Text("Confirmar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -442,6 +509,19 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                     height: 60,
                     color: Color.fromARGB(255, 41, 152, 45),
                     child: Icon(Icons.save_as_outlined, color: Colors.white,)
+                  ),
+                )
+              ),
+              GestureDetector(
+                onTap: () {
+                  removeItem(notifications[index]);
+                },
+                child: Tooltip(
+                  message: "Eliminar",
+                  child: Container(
+                    height: 60,
+                    color: Colors.red.shade400,
+                    child: Icon(Icons.remove_circle_outline, color: Colors.white,)
                   ),
                 )
               )
