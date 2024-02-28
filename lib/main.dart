@@ -1,3 +1,4 @@
+import 'package:diabeteens_v2/Pages/LoginPage.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF4c709a)),
         useMaterial3: true,
       ),
-      home: VistaInicial()
+      home: LoginPage()
     );
 
     // return Scaffold(
