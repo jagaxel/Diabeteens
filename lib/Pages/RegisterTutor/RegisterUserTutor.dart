@@ -22,6 +22,8 @@ class RegisterUserTutorPage extends StatefulWidget {
 }
 
 class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
+  final _formKey = GlobalKey<FormState>();
+
   bool flag = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController nombreController = TextEditingController();
@@ -35,7 +37,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
 
   final emailValidation = EmailValidator(errorText: 'Ingrese un correo válido');
 
-  Future<void> validateEmail() async {
+  Future<void> searchEmail() async {
     try {
       setState(() {
         isLoading = true;
@@ -97,6 +99,15 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
     }
   }
 
+  String? validateCorreo(String? correo) {
+    RegExp correoRegex = RegExp(r'^[\w\.-]+@[\w-]+\.\w{2,3}(\.\w{2,3})?$');
+    final isCorreoValid = correoRegex.hasMatch(correo ?? '');
+    if (!isCorreoValid) {
+      return 'Ingrese un correo válido';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,17 +150,20 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         FadeInAnimation (
                           delay: 1.6,
                           child: TextFormField (
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: "El correo es requerido"),
-                              EmailValidator(errorText: 'Ingrese un correo válido'),
-                            ]),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: validateCorreo,
+                            // MultiValidator([
+                            //   RequiredValidator(errorText: "El correo es requerido"),
+                            //   EmailValidator(errorText: 'Ingrese un correo válido'),
+                            // ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction, //Para que el fomulario se valide en automático
                             controller: emailController,
-                            onChanged: (value) => correo = value,
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -173,6 +187,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                               RequiredValidator(errorText: "El nombre es requerido"),
                               PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
                             ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: nombreController,
                             decoration: InputDecoration (
                               filled: true,
@@ -197,6 +212,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                               RequiredValidator(errorText: "El primer apellido es requerido"),
                               PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
                             ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: primerApController,
                             decoration: InputDecoration (
                               filled: true,
@@ -238,7 +254,8 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           delay: 2.8,
                           child: ElevatedButton(
                             onPressed: () async {
-                              validateEmail();
+                              _formKey.currentState!.validate(); //Para validar el formulario cuando se le dé click al boton
+                              // searchEmail();
                             },
                             style: Common().styleBtnLite,
                             child: isLoading

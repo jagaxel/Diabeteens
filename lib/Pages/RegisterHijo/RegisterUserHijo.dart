@@ -8,9 +8,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 
 class RegisterUserHijoPage extends StatefulWidget {
-  const RegisterUserHijoPage({super.key});
+  final int idTutor;
+  const RegisterUserHijoPage({super.key, required this.idTutor});
 
   @override
   State<RegisterUserHijoPage> createState() => _RegisterUserHijoPageState();
@@ -18,6 +25,82 @@ class RegisterUserHijoPage extends StatefulWidget {
 
 class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
   bool flag = true;
+  bool isLoading = false;
+  bool existPhone = false;
+  TextEditingController telefonoController = TextEditingController();
+  TextEditingController nombreController = TextEditingController();
+  TextEditingController primerApController = TextEditingController();
+  TextEditingController segundoApController = TextEditingController();
+  late int _idTutor;
+  DirectionIp ip = DirectionIp();
+
+  @override
+  void initState() {
+    _idTutor = widget.idTutor;
+
+    super.initState();
+  }
+
+  Future<void> searchPhone() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final response = await http.post(
+        Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/validatePhone.php'),
+        body: {
+          "telefono": telefonoController.text,
+        }
+      );
+      var respuesta = jsonDecode(response.body);
+      print(respuesta);
+      if (respuesta["existe"]) {
+        setState(() {
+          existPhone = true;
+        });
+        Fluttertoast.showToast(
+          msg: "El teléfono ya se encuentra registrado.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: AppColors.azul,
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+      } else {
+        setState(() {
+          existPhone = false;
+        });
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => RegisterDateSexHijoPage(
+              correo: telefonoController.text, 
+              nombre: nombreController.text, 
+              primerAp: primerApController.text, 
+              segundoAp: segundoApController.text,
+            )
+          )
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Ocurrió un error inesperado, intenté de nuevo.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 3,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+      print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +149,12 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                         FadeInAnimation (
                           delay: 1.6,
                           child: TextFormField (
+                            controller: telefonoController,
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: "El teléfono es requerido."),
+                              PatternValidator(r'[0-9]{10}', errorText: 'Formato de teléfono incorrecto.')
+                            ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
@@ -86,6 +175,12 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                         FadeInAnimation (
                           delay: 1.9,
                           child: TextFormField (
+                            controller: nombreController,
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: "El nombre es requerido"),
+                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                            ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
@@ -106,6 +201,12 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                         FadeInAnimation (
                           delay: 2.2,
                           child: TextFormField (
+                            controller: primerApController,
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: "El primer apellido es requerido"),
+                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                            ]),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
@@ -126,6 +227,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                         FadeInAnimation (
                           delay: 2.5,
                           child: TextFormField (
+                            controller: segundoApController,
                             obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
@@ -147,15 +249,10 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                           delay: 2.8,
                           child: ElevatedButton(
                             onPressed: () async {
-                              Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => RegisterDateSexHijoPage()
-                                  )
-                                );
+                              searchPhone();
                             },
                             style: Common().styleBtnLite,
-                            child: !flag
+                            child: isLoading
                                 ? const CupertinoActivityIndicator()
                                 : FittedBox(
                                     child: Text(

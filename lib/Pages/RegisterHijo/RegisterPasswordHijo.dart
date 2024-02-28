@@ -1,16 +1,28 @@
 import 'package:diabeteens_v2/Common/Common.dart';
 import 'package:diabeteens_v2/Pages/PasswordChanged.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/CompleteRegister.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegiSterCompleteTutor.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
 import 'package:diabeteens_v2/Widget/CustomWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:go_router/go_router.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:form_field_validator/form_field_validator.dart';
 
 class RegisterPasswordHijoPage extends StatefulWidget {
-  const RegisterPasswordHijoPage({super.key});
+  final String telefono;
+  final String nombre;
+  final String primerAp;
+  final String segundoAp;
+  final String fechaNacimiento;
+  final int edad;
+  final String sexo;
+  const RegisterPasswordHijoPage({super.key, required this.telefono, required this.nombre, required this.primerAp, required this.segundoAp, required this.fechaNacimiento, required this.edad, required this.sexo});
 
   @override
   State<RegisterPasswordHijoPage> createState() => _RegisterPasswordHijoPageState();
@@ -18,6 +30,117 @@ class RegisterPasswordHijoPage extends StatefulWidget {
 
 class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
   bool flag = true;
+  bool isIncorrectPassword = false;
+  bool isLoading = false;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  late String _telefono;
+  late String _nombre;
+  late String _primerAP;
+  late String _segundoAp;
+  late String _fechaNacimiento;
+  late int _edad;
+  late String _sexo;
+
+  DirectionIp ip = DirectionIp();
+
+  @override
+  void initState() {
+    _telefono = widget.telefono;
+    _nombre = widget.nombre;
+    _primerAP = widget.primerAp;
+    _segundoAp = widget.segundoAp;
+    _fechaNacimiento = widget.fechaNacimiento;
+    _edad = widget.edad;
+    _sexo = widget.sexo;
+
+    super.initState();
+  }
+
+  bool isEqualsPasswoords() {
+    if (passwordController.text == confirmPasswordController.text) {
+      setState(() {
+        isIncorrectPassword = false;
+      });
+      return true;
+    }
+    setState(() {
+      isIncorrectPassword = true;
+    });
+    return false;
+  }
+
+  Future<void> registerData() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      if (isEqualsPasswoords()) {
+        final response = await http.post(
+          Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerData.php'),
+          body: {
+            "telefono": _telefono,
+            "nombre": _nombre,
+            "primerAP": _primerAP,
+            "segundoAp": _segundoAp,
+            "fechaNacimiento": _fechaNacimiento,
+            "edad": _edad.toString(),
+            "sexo": _sexo,
+            "contrasena": passwordController.text,
+          }
+        );
+        var respuesta = jsonDecode(response.body);
+        print(respuesta);
+        if (respuesta["isSuccess"]) {
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => CompleteRegisterPage()
+            )
+          );
+        } else {
+          Fluttertoast.showToast(
+            // ignore: prefer_interpolation_to_compose_strings
+            msg: "${"Error al " + respuesta["msgError"]} intente de nuevo.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Color.fromARGB(130, 169, 0, 0),
+            textColor: Colors.white,
+            fontSize: 16.0
+          );
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "La contraseña no coincide, intente de nuevo.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Color.fromARGB(130, 169, 0, 0),
+          textColor: Colors.white,
+          fontSize: 16.0
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Ocurrió un error inesperado, intenté de nuevo",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 3,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+      print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +181,7 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                     FadeInAnimation(
                       delay: 1.6,
                       child: Text(
-                        "Ingrese una nueva contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
+                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
                         style: Common().shortTheme,
                       ),
                     )
@@ -73,6 +196,12 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                       FadeInAnimation(
                         delay: 1.9,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: passwordController,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
                             filled: true,
@@ -82,6 +211,10 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                             hintStyle: Common().hinttext,
                             border: OutlineInputBorder (
                               borderSide: const BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(12)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
@@ -99,6 +232,12 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                       FadeInAnimation(
                         delay: 2.1,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: confirmPasswordController,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
                             filled: true,
@@ -108,6 +247,10 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                             hintStyle: Common().hinttext,
                             border: OutlineInputBorder (
                               borderSide: const BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(12)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
@@ -126,15 +269,10 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
                         delay: 2.4,
                         child: ElevatedButton (
                           onPressed: () async {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(
-                                builder: (context) => CompleteRegisterPage()
-                              )
-                            );
+                            registerData();
                           },
                           style: Common().styleBtnLite,
-                          child: !flag
+                          child: isLoading
                           ? const CupertinoActivityIndicator()
                           : FittedBox(
                               child: Text(

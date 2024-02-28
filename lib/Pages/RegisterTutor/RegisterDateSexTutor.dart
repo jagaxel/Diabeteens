@@ -36,10 +36,6 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
     _nombre = widget.nombre;
     _primerAP = widget.primerAp;
     _segundoAp = widget.segundoAp;
-    print(_correo);
-        print(_nombre);
-        print(_primerAP);
-        print(_segundoAp);
 
     super.initState();
   }

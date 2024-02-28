@@ -23,8 +23,8 @@ import 'package:diabeteens_v2/Utils/AppColors.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
 class RegiSterCompleteTutorPage extends StatefulWidget {
-  // static const routeName = '/RegiSterCompleteTutorScreen';
-  const RegiSterCompleteTutorPage({super.key});
+  final int idTutor;
+  const RegiSterCompleteTutorPage({super.key, required this.idTutor});
 
   @override
   State<RegiSterCompleteTutorPage> createState() => _RegiSterCompleteTutorScreenState();
@@ -34,41 +34,19 @@ class _RegiSterCompleteTutorScreenState extends State<RegiSterCompleteTutorPage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late int _idTutor;
+
+  @override
+  void initState() {
+    _idTutor = widget.idTutor;
+
+    super.initState();
+  }
 
   bool _obscureText = true;
   bool flag = true;
 
   DirectionIp ip = DirectionIp();
-
-/*
-  _launch(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'No se envió $url';
-    }
-  }
-
-  launchEMAI() async {
-    // final Uri _emailLaunchUri = Uri(
-    //   scheme: 'mailto',
-    //   path: 'pp103634@gmail.com',
-    //   queryParameters: {
-    //     'subject': 'Codigo de Validación',
-    //     'body': 'Prueba'
-    //   }
-    // );
-    // _launch(_emailLaunchUri.toString());
-    final Email email = await Email(
-      body: 'Prueba',
-      subject: 'Codigo',
-      recipients: ['pp103634@gmail.com'],
-      isHTML: false,
-    );
-
-    await FlutterEmailSender.send(email);
-  }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +82,7 @@ class _RegiSterCompleteTutorScreenState extends State<RegiSterCompleteTutorPage>
                       Navigator.push(
                         context, 
                         MaterialPageRoute(
-                          builder: (context) => RegisterUserHijoPage()
+                          builder: (context) => RegisterUserHijoPage(idTutor: _idTutor)
                         )
                       );
                     },

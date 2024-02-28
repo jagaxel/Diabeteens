@@ -5,6 +5,7 @@ import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
 import 'package:diabeteens_v2/Widget/CustomWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 // import 'package:go_router/go_router.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -68,6 +69,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       FadeInAnimation(
                         delay: 1.9,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
                             filled: true,
@@ -94,6 +100,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       FadeInAnimation(
                         delay: 2.1,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
                             filled: true,

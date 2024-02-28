@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:form_field_validator/form_field_validator.dart';
 
 class RegisterPasswordTutorPage extends StatefulWidget {
   final String correo;
@@ -96,7 +97,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => RegiSterCompleteTutorPage()
+              builder: (context) => RegiSterCompleteTutorPage(idTutor: respuesta["idTutor"])
             )
           );
         } else {
@@ -180,7 +181,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                     FadeInAnimation(
                       delay: 1.6,
                       child: Text(
-                        "Ingrese una nueva contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
+                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
                         style: Common().shortTheme,
                       ),
                     )
@@ -195,6 +196,11 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                       FadeInAnimation(
                         delay: 1.9,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: passwordController,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
@@ -226,6 +232,11 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                       FadeInAnimation(
                         delay: 2.1,
                         child: TextFormField (
+                          validator: MultiValidator([
+                              RequiredValidator(errorText: 'La contraseña es requerida'), 
+                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                          ]),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: confirmPasswordController,
                           obscureText: flag ? true : false,
                           decoration: InputDecoration (
