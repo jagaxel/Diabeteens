@@ -17,6 +17,9 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool flag = true;
+  bool showPass = true;
+  bool showPassConfirm = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     FadeInAnimation(
                       delay: 1.6,
                       child: Text(
-                        "Ingrese una nueva contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
+                        "Ingrese una nueva contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un caracter especial.",
                         style: Common().shortTheme,
                       ),
                     )
@@ -71,10 +74,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         child: TextFormField (
                           validator: MultiValidator([
                               RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                              PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
                           ]),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          obscureText: flag ? true : false,
+                          obscureText: showPass,
                           decoration: InputDecoration (
                             filled: true,
                             fillColor: AppColors.blanco,
@@ -86,9 +89,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
+                              onPressed: () {
+                                setState(() {
+                                  showPass = !showPass;
+                                });
+                              },
+                              icon: Icon(
+                                showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
                               )
                             )
                           ),
@@ -102,10 +109,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         child: TextFormField (
                           validator: MultiValidator([
                               RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                              PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
                           ]),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          obscureText: flag ? true : false,
+                          obscureText: showPassConfirm,
                           decoration: InputDecoration (
                             filled: true,
                             fillColor: AppColors.blanco,
@@ -117,9 +124,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
+                              onPressed: () {
+                                setState(() {
+                                  showPassConfirm = !showPassConfirm;
+                                });
+                              },
+                              icon: Icon(
+                                showPassConfirm ? Icons.remove_red_eye_outlined : Icons.visibility_off
                               )
                             )
                           ),

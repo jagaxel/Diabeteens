@@ -24,6 +24,8 @@ class RegisterUserHijoPage extends StatefulWidget {
 }
 
 class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
+  final _formKey = GlobalKey<FormState>();
+
   bool flag = true;
   bool isLoading = false;
   bool existPhone = false;
@@ -46,6 +48,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
       setState(() {
         isLoading = true;
       });
+      print("entra");
       final response = await http.post(
         Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/validatePhone.php'),
         body: {
@@ -76,7 +79,8 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
           context, 
           MaterialPageRoute(
             builder: (context) => RegisterDateSexHijoPage(
-              correo: telefonoController.text, 
+              idTutor: _idTutor, 
+              telefono: telefonoController.text, 
               nombre: nombreController.text, 
               primerAp: primerApController.text, 
               segundoAp: segundoApController.text,
@@ -144,6 +148,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         FadeInAnimation (
@@ -152,10 +157,11 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                             controller: telefonoController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El teléfono es requerido."),
-                              PatternValidator(r'[0-9]{10}', errorText: 'Formato de teléfono incorrecto.')
+                              MinLengthValidator(10, errorText: 'Formato de teléfono incorrecto.'),
+                              MaxLengthValidator(10, errorText: 'Formato de teléfono incorrecto.'),
+                              PatternValidator(r'[0-9]', errorText: 'Formato de teléfono incorrecto.')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -178,10 +184,9 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                             controller: nombreController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El nombre es requerido"),
-                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -204,10 +209,9 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                             controller: primerApController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El primer apellido es requerido"),
-                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            obscureText: flag ? true : false,
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -228,7 +232,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                           delay: 2.5,
                           child: TextFormField (
                             controller: segundoApController,
-                            obscureText: flag ? true : false,
+                            validator: PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto'),
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -249,7 +253,9 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                           delay: 2.8,
                           child: ElevatedButton(
                             onPressed: () async {
-                              searchPhone();
+                              if (_formKey.currentState!.validate()) {
+                                searchPhone();
+                              }
                             },
                             style: Common().styleBtnLite,
                             child: isLoading

@@ -29,7 +29,11 @@ class RegisterPasswordTutorPage extends StatefulWidget {
 }
 
 class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
+  final _formKey = GlobalKey<FormState>();
+
   bool flag = true;
+  bool showPass = true;
+  bool showPassConfirm= true;
   bool isIncorrectPassword = false;
   bool isLoading = false;
   TextEditingController passwordController = TextEditingController();
@@ -181,7 +185,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                     FadeInAnimation(
                       delay: 1.6,
                       child: Text(
-                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
+                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un caracter especial.",
                         style: Common().shortTheme,
                       ),
                     )
@@ -191,6 +195,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       FadeInAnimation(
@@ -198,11 +203,11 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                         child: TextFormField (
                           validator: MultiValidator([
                               RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                              PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
                           ]),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: passwordController,
-                          obscureText: flag ? true : false,
+                          obscureText: showPass,
                           decoration: InputDecoration (
                             filled: true,
                             fillColor: AppColors.blanco,
@@ -218,9 +223,13 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
+                              onPressed: () {
+                                setState(() {
+                                  showPass = !showPass;
+                                });
+                              },
+                              icon: Icon(
+                                showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
                               )
                             )
                           ),
@@ -234,11 +243,11 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                         child: TextFormField (
                           validator: MultiValidator([
                               RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
+                              PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
                           ]),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: confirmPasswordController,
-                          obscureText: flag ? true : false,
+                          obscureText: showPassConfirm,
                           decoration: InputDecoration (
                             filled: true,
                             fillColor: AppColors.blanco,
@@ -254,9 +263,13 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                               borderRadius: BorderRadius.circular(12)
                             ),
                             suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
+                              onPressed: () {
+                                setState(() {
+                                  showPassConfirm = !showPassConfirm;
+                                });
+                              },
+                              icon: Icon(
+                                showPassConfirm ? Icons.remove_red_eye_outlined : Icons.visibility_off
                               )
                             )
                           ),
@@ -269,7 +282,9 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                         delay: 2.4,
                         child: ElevatedButton (
                           onPressed: () {
-                            registerData();
+                            if (_formKey.currentState!.validate()) {
+                              registerData();
+                            }
                           },
                           style: Common().styleBtnLite,
                           child: isLoading

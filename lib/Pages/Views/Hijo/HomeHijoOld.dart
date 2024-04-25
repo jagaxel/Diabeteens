@@ -10,8 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:diabeteens_v2/Common/Common.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 
 class HomeHijo extends StatefulWidget {
   final int idUsuario;
@@ -24,7 +22,6 @@ class HomeHijo extends StatefulWidget {
 class _HomeHijoState extends State<HomeHijo> {
   DirectionIp ip = DirectionIp();
   late int _idUsuario;
-  final _formKey = GlobalKey<FormState>();
 
   List<String> items = [
     "Inicio",
@@ -90,19 +87,19 @@ class _HomeHijoState extends State<HomeHijo> {
         child: Text(
           text,
           style: TextStyle(
-            color: (value == index) ? Colors.white : Colors.black,
+            color: (value == index) ? Colors.white : Colors.black38,
           ),
         ),
         style: ButtonStyle(
           side: MaterialStateProperty.all<BorderSide>(BorderSide(
-              width: 1, color: (value == index) ? AppColors.naranjaLite : Color.fromARGB(255, 248, 192, 167))),
+              width: 1, color: (value == index) ? Colors.black : Colors.white)),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           )),
           backgroundColor: (value == index)
-              ? MaterialStateProperty.all<Color>(AppColors.naranjaLite)
-              : MaterialStateProperty.all<Color>(Color.fromARGB(255, 248, 192, 167)),
+              ? MaterialStateProperty.all<Color>(Colors.black)
+              : MaterialStateProperty.all<Color>(Colors.white),
         ),
       ),
     );
@@ -186,13 +183,12 @@ class _HomeHijoState extends State<HomeHijo> {
   }
 
   void showDialogSelected(tipo) async {
-    await showDialog (
+    print(value);
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         int cantidad = 1;
-        double cantSliderGlucosa = 20;
-        double cantSliderInsu = 1;
         final cantidadLibre = TextEditingController();
         bool inInput = false;
 
@@ -200,7 +196,7 @@ class _HomeHijoState extends State<HomeHijo> {
           try {
             String tipoIngesta = (tipo == 0 ? 76 : (value + 1)).toString();
             if (tipo != 1) {
-              cantidad = tipo == 0 ? cantSliderGlucosa.toInt() : cantSliderInsu.toInt();
+              cantidad = int.parse(cantidadLibre.text);
             }
             final response = await http.post(
               Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/addIngesta.php'),
@@ -245,8 +241,8 @@ class _HomeHijoState extends State<HomeHijo> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Confirmación"),
-                content: const Text(
+                title: Text("Confirmación"),
+                content: Text(
                   "¿Realizar registro?",
                   style: TextStyle(
                     fontSize: 17,
@@ -268,7 +264,6 @@ class _HomeHijoState extends State<HomeHijo> {
                     child: const Text("Confirmar"),
                   ),
                 ],
-                // backgroundColor: Colors.amber,
               );
             },
           );
@@ -277,12 +272,7 @@ class _HomeHijoState extends State<HomeHijo> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text(
-                tipo == 0 ? "Registro de glucosa" : tipo == 1 ? "${tiposComida[value]} seleccionada" : (tipo == 2 ? "Medicamento seleccionado" : (tipo == 3 ? "Deporte seleccionado" : "")),
-                style: TextStyle(
-                  color: AppColors.blanco
-                ),
-              ),
+              title: Text(tipo == 0 ? "Registro de glucosa" : tipo == 1 ? "${tiposComida[value]} seleccionada" : (tipo == 2 ? "Medicamento seleccionado" : (tipo == 3 ? "Deporte seleccionado" : ""))),
               content: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -313,12 +303,7 @@ class _HomeHijoState extends State<HomeHijo> {
                     SizedBox(
                       height: 15,
                     ),
-                    Text(
-                      tipo == 0 ? "Ingresa la cantidad medida" : tipo == 1 ? "Ingresa la cantidad consumida" : (tipo == 2 ? "Ingresa la cantidad suministrada" : (tipo == 3 ? "Ingresa el tiempo jugado" : "")),
-                      style: TextStyle(
-                        color: AppColors.blanco
-                      ),
-                    ),
+                    Text(tipo == 0 ? "Ingresa la cantidad medida" : tipo == 1 ? "Ingresa la cantidad consumida" : (tipo == 2 ? "Ingresa la cantidad suministrada" : (tipo == 3 ? "Ingresa el tiempo jugado" : ""))),
                     SizedBox(
                       height: 15,
                     ),
@@ -386,116 +371,30 @@ class _HomeHijoState extends State<HomeHijo> {
                       ]
                     )
                     :
-                    (
-                      tipo == 0 ?
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Cantidad: ${cantSliderGlucosa.toInt()}",
-                            style: TextStyle(
-                              color: AppColors.blanco
-                            ),
+                    Container(
+                      width: 300,
+                      child: TextField(
+                        obscureText: false,
+                        keyboardType: TextInputType.number,
+                        controller: cantidadLibre,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5)
                           ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: Slider(
-                              value: cantSliderGlucosa,
-                              min: 20,
-                              max: 200,
-                              divisions: 200,
-                              label: cantSliderGlucosa.round().toString(),
-                              activeColor: cantSliderGlucosa < 70 ? AppColors.contentColorBlue : (cantSliderGlucosa < 180 ? const Color.fromARGB(255, 74, 202, 78) : AppColors.rojo), 
-                              onChanged: (double value) {
-                                setState(() {
-                                  cantSliderGlucosa = value;
-                                });
-                              }
-                            )
-                            /*
-                            Form (
-                              key: _formKey,
-                              child: TextFormField(
-                                validator: MultiValidator([
-                                    RequiredValidator(errorText: "La cantidad es requerida."),
-                                    PatternValidator(r'[0-9]', errorText: 'La cantidad ingresada es incorrecta.')
-                                  ]
-                                ),
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                obscureText: false,
-                                keyboardType: TextInputType.number,
-                                controller: cantidadLibre,
-                                style: TextStyle (
-                                  color: AppColors.blanco
-                                ),
-                                decoration: InputDecoration (
-                                  border: OutlineInputBorder (
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: AppColors.blanco
-                                    )
-                                  ),
-                                  labelText: 'Cantidad',
-                                  labelStyle: TextStyle (
-                                    color: AppColors.blanco
-                                  )
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    inInput = true;
-                                  });
-                                },
-                                onTapOutside: (event) {
-                                  setState(() {
-                                    inInput = false;
-                                  });
-                                },
-                              ),
-                            )
-                            */
-                            ,
-                          )
-                        
-                        ],
-                      )
-                      :
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Cantidad: ${cantSliderInsu.toInt()}",
-                            style: TextStyle(
-                              color: AppColors.blanco
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: Slider(
-                              value: cantSliderInsu,
-                              min: 1,
-                              max: 200,
-                              divisions: 200,
-                              label: cantSliderInsu.round().toString(),
-                              activeColor: AppColors.azul, 
-                              onChanged: (double value) {
-                                setState(() {
-                                  cantSliderInsu = value;
-                                });
-                              }
-                            )
-                            ,
-                          )
-                        
-                        ],
-                      )
+                          labelText: 'Cantidad'
+                        ),
+                        onTap: () {
+                          setState(() {
+                            inInput = true;
+                          });
+                        },
+                        onTapOutside: (event) {
+                          setState(() {
+                            inInput = false;
+                          });
+                        },
+                      ),
                     )
-                    ,
                   ],
                 ),
                 
@@ -505,32 +404,17 @@ class _HomeHijoState extends State<HomeHijo> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    "Cancelar",
-                    style: TextStyle(
-                      color: AppColors.blanco
-                    ),
-                  ),
+                  child: const Text("Cancelar"),
                 ),
                 TextButton(
                   onPressed: () {
-                    if (current != 3) {
-                      if (cantSliderGlucosa > 0 || cantSliderInsu > 0) {
-                        showConfirmRegistro();
-                      }
-                    } else {
-                      showConfirmRegistro();
-                    }
+                    // Navigator.pop(context);
+                    // addIngesta();
+                    showConfirmRegistro();
                   },
-                  child: const Text(
-                    "Registrar",
-                    style: TextStyle(
-                      color: AppColors.blanco
-                    ),
-                  ),
+                  child: const Text("Registrar"),
                 ),
               ],
-              backgroundColor: colors[tipo + 1],
             );
           }
         );
@@ -556,25 +440,22 @@ class _HomeHijoState extends State<HomeHijo> {
           // Padding(
           //   padding: padding,
           // ),
-          FadeInAnimation (
-            delay: 1,
-            child: AppBar (
-              backgroundColor: AppColors.fondoColorAzul,
-              automaticallyImplyLeading: false,
-              title: Center(
-                child: Text("DIABETEENS"),
-              ),
-              titleSpacing: 5, 
-              actions: [
-                IconButton(
-                  onPressed: () {
-                  }, 
-                  icon: Image(
-                    image: AssetImage("assets/images/logo-diabeteens.png"),
-                  )
-                )
-              ],
+          AppBar (
+            backgroundColor: AppColors.fondoColorAzul,
+            automaticallyImplyLeading: false,
+            title: Center(
+              child: Text("DIABETEENS"),
             ),
+            titleSpacing: 5, 
+            actions: [
+              IconButton(
+                onPressed: () {
+                }, 
+                icon: Image(
+                  image: AssetImage("assets/images/logo-diabeteens.png"),
+                )
+              )
+            ],
           ),
           Container(
             width: double.infinity,
@@ -582,17 +463,15 @@ class _HomeHijoState extends State<HomeHijo> {
             margin: const EdgeInsets.only(top: 85,bottom: 5, left: 5, right: 5),
             child: Column(
               children: [
-                FadeInAnimation (
-                  delay: 1.3,
-                  child: SizedBox (
-                    width: double.infinity,
-                    height: 80,
-                    child: ListView.builder(
+                SizedBox(
+                  width: double.infinity,
+                  height: 80,
+                  child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       itemCount: items.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (ctx, index) {
-                        return Column (
+                        return Column(
                           children: [
                             GestureDetector(
                               onTap: () {
@@ -664,12 +543,11 @@ class _HomeHijoState extends State<HomeHijo> {
                             )
                           ],
                         );
-                      }
-                    ),
-                  ),
+                      }),
                 ),
+
                 /// MAIN BODY
-                Container (
+                Container(
                   margin: const EdgeInsets.only(top: 30),
                   width: double.infinity,
                   height: 500,
@@ -678,199 +556,141 @@ class _HomeHijoState extends State<HomeHijo> {
                     controller: pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return Column (
+                      return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FadeInAnimation (
-                            delay: 1.6,
-                            child: current == 0 ?
-                              (Icon(
-                                icons[current],
-                                size: 200,
-                                color: colors[current],
-                              ))
-                              :
-                              current == 5 ?
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context, 
-                                    MaterialPageRoute(
-                                      builder: (context) => SnakeGamePage()
-                                    )
-                                  );
-                                },
-                                child: Icon(
-                                  icons[current],
-                                  size: 200,
-                                  color: colors[current],
-                                ),
-                              )
-                              :
-                              current == 3 ?
-                              Expanded(
-                                child: Container(
-                                  child: Center(
-                                    child: Image(
-                                    image: AssetImage(src[current]),
-                                    width: 250,
-                                  ),
-                                  ),
-                                ),
-                              )
-                              :
-                              Image(
+                          current == 0 ?
+                          (Icon(
+                            icons[current],
+                            size: 200,
+                            color: colors[current],
+                          ))
+                          :
+                          current == 5 ?
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => SnakeGamePage()
+                                )
+                              );
+                            },
+                            child: Icon(
+                              icons[current],
+                              size: 200,
+                              color: colors[current],
+                            ),
+                          )
+                          :
+                          current == 3 ?
+                          Expanded(
+                            child: Container(
+                              child: Center(
+                                child: Image(
                                 image: AssetImage(src[current]),
                                 width: 250,
-                              )
+                              ),
+                              ),
+                            ),
+                          )
+                          :
+                          Image(
+                            image: AssetImage(src[current]),
+                            width: 250,
                           )
                           ,
                           current == 3 ?
-                          // FadeInAnimation (
-                          //   delay: 1.9,
-                          //   child: 
-                            Expanded(
-                              child: FadeInAnimation (
-                                delay: 1.9,
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 6, right: 6),
-                                  width: double.infinity,
-                                  height: 10,
-                                  child: ListView(
-                                    physics: const BouncingScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    children: <Widget> [
-                                      CustomRadioButton("Bebidas", 0),
-                                      CustomRadioButton("Carnes", 1),
-                                      CustomRadioButton("Dulces", 3),
-                                      CustomRadioButton("Frutas", 4),
-                                      CustomRadioButton("Postres", 5),
-                                      CustomRadioButton("Verduras", 6),
-                                      CustomRadioButton("Otros Alimentos", 2)
-                                    ],
-                                  ),
-                                )
-                              )
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 6, right: 6),
+                              width: double.infinity,
+                              height: 10,
+                              child: ListView(
+                                physics: const BouncingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                  CustomRadioButton("Bebidas", 0),
+                                  CustomRadioButton("Carnes", 1),
+                                  CustomRadioButton("Dulces", 3),
+                                  CustomRadioButton("Frutas", 4),
+                                  CustomRadioButton("Postres", 5),
+                                  CustomRadioButton("Verduras", 6),
+                                  CustomRadioButton("Otros Alimentos", 2)
+                                ],
+                              ),
                             )
-                          // )
+                          )
                           :const SizedBox(
                             height: 0,
                           ),
                           const SizedBox(
                             height: 10,
                           ),
-                          FadeInAnimation (
-                            delay: 2.2,
-                            child: current == 1 || current == 2 ?
-                              ElevatedButton (
-                                onPressed: () async {
-                                  setState(() {
-                                    selectComida = 0;
-                                  });
-                                  switch (current) {
-                                    case 1: showDialogSelected(0);
-                                      break;
-                                    case 2: showDialogSelected(2);
-                                      break;
-                                  }
-                                },
-                                style: ButtonStyle (
-                                  side: const MaterialStatePropertyAll(BorderSide(color: AppColors.blanco)),
-                                  shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)
-                                    )
-                                  ),
-                                  fixedSize: const MaterialStatePropertyAll(Size.fromWidth(270)),
-                                  padding: const MaterialStatePropertyAll(
-                                    EdgeInsets.symmetric(vertical: 5),
-                                  ),
-                                  backgroundColor: MaterialStatePropertyAll(colors[current]),
-                                ),
-                                child: FittedBox(
-                                  child: Text(
-                                    "Registrar ${items[current]}",
-                                    style: Common().semiboldwhite,
-                                  )
-                                ),
-                              )
-                              :
-                              Text(
-                                // current == 0 || current == 5 ? "${items[current]}" : "Registrar ${items[current]}",
-                                current == 3 ? "${tiposComida[value]}s" : "${items[current]}",
-                                style: GoogleFonts.ubuntu(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 30,
-                                  color: colors[current],
-                                ),
-                              )
-                              ,
-                          )
-                          ,
+                          Text(
+                            "${items[current]}",
+                            style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 30,
+                              color: colors[current],
+                            ),
+                          ),
                           const SizedBox(
                             height: 15,
                           ),
-                          FadeInAnimation (
-                            delay: 2.5,
-                            child: Container (
-                              margin: const EdgeInsets.only(left: 6, right: 6),
-                              width: double.infinity,
-                              height: 70,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: (current == 1 ? 1 : (current == 2 ? listSrcMedicamento.length : (current == 3 ? listNameComidas[value].length : (current == 4 ? listSrcDeportes.length : 0))  )  ),
-                                physics: const BouncingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return current == 3 || current == 4 ?
-                                  Tooltip(
-                                    message: 
-                                      // current == 1 ? 'Glucosa'
-                                      // :
-                                      // current == 2 ? listNameMedicamento[index]
-                                      // :
-                                      current == 3 ? listNameComidas[value][index]
-                                      :
-                                      current == 4 ? listNameDeportes[index]
-                                      :
-                                      '',
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectComida = index;
-                                        });
-                                        switch (current) {
-                                          // case 1: showDialogSelected(0);
-                                          //   break;
-                                          // case 2: showDialogSelected(2);
-                                          //   break;
-                                          case 3: showDialogSelected(1);
-                                            break;
-                                          case 4: showDialogSelected(3);
-                                            break;
-                                        }
-                                      },
-                                      child: Image(
-                                        image: AssetImage(
-                                          // current == 1 ? 'assets/images/glucose/medidor-de-glucosa.png'
-                                          // :
-                                          // current == 2 ? listSrcMedicamento[index]
-                                          // :
-                                          current == 3 ? listSrcComidas[value][index]
-                                          :
-                                          current == 4 ? listSrcDeportes[index]
-                                          :
-                                          ''
-                                        )
-                                      ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 6, right: 6),
+                            width: double.infinity,
+                            height: 70,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: (current == 1 ? 1 : (current == 2 ? listSrcMedicamento.length : (current == 3 ? listNameComidas[value].length : (current == 4 ? listSrcDeportes.length : 0))  )  ),
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Tooltip(
+                                  message: current == 1 ? 'Glucosa'
+                                    :
+                                    current == 2 ? listNameMedicamento[index]
+                                    :
+                                    current == 3 ? listNameComidas[value][index]
+                                    :
+                                    current == 4 ? listNameDeportes[index]
+                                    :
+                                    '',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectComida = index;
+                                      });
+                                      switch (current) {
+                                        case 1: showDialogSelected(0);
+                                          break;
+                                        case 2: showDialogSelected(2);
+                                          break;
+                                        case 3: showDialogSelected(1);
+                                          break;
+                                        case 4: showDialogSelected(3);
+                                          break;
+                                      }
+                                    },
+                                    child: Image(
+                                      image: AssetImage(
+                                        current == 1 ? 'assets/images/glucose/medidor-de-glucosa.png'
+                                        :
+                                        current == 2 ? listSrcMedicamento[index]
+                                        :
+                                        current == 3 ? listSrcComidas[value][index]
+                                        :
+                                        current == 4 ? listSrcDeportes[index]
+                                        :
+                                        ''
+                                      )
                                     ),
-                                  )
-                                  :
-                                  const Text("")
-                                  ;
-                                },
-                              ),
-                            )
+                                  ),
+                                );
+                              },
+                            ),
                           )
                         ],
                       );

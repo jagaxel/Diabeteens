@@ -157,11 +157,10 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           delay: 1.6,
                           child: TextFormField (
                             keyboardType: TextInputType.emailAddress,
-                            validator: validateCorreo,
-                            // MultiValidator([
-                            //   RequiredValidator(errorText: "El correo es requerido"),
-                            //   EmailValidator(errorText: 'Ingrese un correo válido'),
-                            // ]),
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: "El correo es requerido"),
+                              EmailValidator(errorText: 'Ingrese un correo válido'),
+                            ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction, //Para que el fomulario se valide en automático
                             controller: emailController,
                             decoration: InputDecoration (
@@ -185,7 +184,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           child: TextFormField (
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El nombre es requerido"),
-                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                              PatternValidator(r'', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: nombreController,
@@ -210,7 +209,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           child: TextFormField (
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El primer apellido es requerido"),
-                              PatternValidator(r'[A-Z. ]', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: primerApController,
@@ -234,6 +233,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           delay: 2.5,
                           child: TextFormField (
                             controller: segundoApController,
+                            validator: PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto'),
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
@@ -254,8 +254,9 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           delay: 2.8,
                           child: ElevatedButton(
                             onPressed: () async {
-                              _formKey.currentState!.validate(); //Para validar el formulario cuando se le dé click al boton
-                              // searchEmail();
+                              if (_formKey.currentState!.validate()) {
+                                searchEmail();
+                              }
                             },
                             style: Common().styleBtnLite,
                             child: isLoading

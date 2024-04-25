@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:form_field_validator/form_field_validator.dart';
 
 class RegisterPasswordHijoPage extends StatefulWidget {
+  final int idTutor;
   final String telefono;
   final String nombre;
   final String primerAp;
@@ -22,19 +23,25 @@ class RegisterPasswordHijoPage extends StatefulWidget {
   final String fechaNacimiento;
   final int edad;
   final String sexo;
-  const RegisterPasswordHijoPage({super.key, required this.telefono, required this.nombre, required this.primerAp, required this.segundoAp, required this.fechaNacimiento, required this.edad, required this.sexo});
+  final String peso;
+  const RegisterPasswordHijoPage({super.key, required this.telefono, required this.nombre, required this.primerAp, required this.segundoAp, required this.fechaNacimiento, required this.edad, required this.sexo, required this.peso, required this.idTutor});
 
   @override
   State<RegisterPasswordHijoPage> createState() => _RegisterPasswordHijoPageState();
 }
 
 class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
+  final _formKey = GlobalKey<FormState>();
+
   bool flag = true;
   bool isIncorrectPassword = false;
   bool isLoading = false;
+  bool showPass = true;
+  bool showPassConfirm = true;
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  late int _idTutor;
   late String _telefono;
   late String _nombre;
   late String _primerAP;
@@ -42,11 +49,29 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
   late String _fechaNacimiento;
   late int _edad;
   late String _sexo;
+  late String _peso;
+  int _indexImg = 0;
+  int lengthImg = 0;
+  double delayFade = 1.6;
+
+  List<String> srcImgLogin = [
+    "assets/images/login/ave.png",
+    "assets/images/login/caballo.png",
+    "assets/images/login/calamar.png",
+    "assets/images/login/cangrejo.png",
+    "assets/images/login/foca.png",
+    "assets/images/login/nutria.png",
+    "assets/images/login/pez_gato.png",
+    "assets/images/login/pez_globo.png",
+    "assets/images/login/pez.png",
+    "assets/images/login/tortuga.png",
+  ];
 
   DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
+    _idTutor = widget.idTutor;
     _telefono = widget.telefono;
     _nombre = widget.nombre;
     _primerAP = widget.primerAp;
@@ -54,6 +79,7 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
     _fechaNacimiento = widget.fechaNacimiento;
     _edad = widget.edad;
     _sexo = widget.sexo;
+    _peso = widget.peso;
 
     super.initState();
   }
@@ -80,6 +106,7 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
         final response = await http.post(
           Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerData.php'),
           body: {
+            "idTutor": _idTutor.toString(),
             "telefono": _telefono,
             "nombre": _nombre,
             "primerAP": _primerAP,
@@ -87,6 +114,7 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
             "fechaNacimiento": _fechaNacimiento,
             "edad": _edad.toString(),
             "sexo": _sexo,
+            "peso": _peso,
             "contrasena": passwordController.text,
           }
         );
@@ -144,176 +172,245 @@ class _RegisterPasswordHijoPageState extends State<RegisterPasswordHijoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.fondoColorAzul,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FadeInAnimation(
-                delay: 1,
-                child: IconButton(
-                    onPressed: () {
-                      // GoRouter.of(context).pop();
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      CupertinoIcons.back,
-                      size: 35,
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FadeInAnimation(
-                      delay: 1.3,
-                      child: Text(
-                        "Registrar",
-                        style: Common().titelTheme,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    FadeInAnimation(
-                      delay: 1.6,
-                      child: Text(
-                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un carácter especial.",
-                        style: Common().shortTheme,
-                      ),
-                    )
-                  ],
+        backgroundColor: AppColors.fondoColorAzul,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FadeInAnimation(
+                  delay: 1,
+                  child: IconButton(
+                      onPressed: () {
+                        // GoRouter.of(context).pop();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        CupertinoIcons.back,
+                        size: 35,
+                      )),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Form(
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       FadeInAnimation(
-                        delay: 1.9,
-                        child: TextFormField (
-                          validator: MultiValidator([
-                              RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
-                          ]),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: passwordController,
-                          obscureText: flag ? true : false,
-                          decoration: InputDecoration (
-                            filled: true,
-                            fillColor: AppColors.blanco,
-                            contentPadding: const EdgeInsets.all(13),
-                            hintText: "Ingresar contraseña",
-                            hintStyle: Common().hinttext,
-                            border: OutlineInputBorder (
-                              borderSide: const BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
-                              )
-                            )
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      FadeInAnimation(
-                        delay: 2.1,
-                        child: TextFormField (
-                          validator: MultiValidator([
-                              RequiredValidator(errorText: 'La contraseña es requerida'), 
-                              PatternValidator(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8, }$', errorText: 'Contraseña incorrecta')
-                          ]),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: confirmPasswordController,
-                          obscureText: flag ? true : false,
-                          decoration: InputDecoration (
-                            filled: true,
-                            fillColor: AppColors.blanco,
-                            contentPadding: const EdgeInsets.all(13),
-                            hintText: "Confirmar contraseña",
-                            hintStyle: Common().hinttext,
-                            border: OutlineInputBorder (
-                              borderSide: const BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            suffixIcon: IconButton (
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined
-                              )
-                            )
-                          ),
+                        delay: 1.3,
+                        child: Text(
+                          "Registrar",
+                          style: Common().titelTheme,
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 25,
                       ),
                       FadeInAnimation(
-                        delay: 2.4,
-                        child: ElevatedButton (
-                          onPressed: () async {
-                            registerData();
-                          },
-                          style: Common().styleBtnLite,
-                          child: isLoading
-                          ? const CupertinoActivityIndicator()
-                          : FittedBox(
-                              child: Text(
-                                "Finalizar",
-                                style: Common().semiboldwhite,
-                              )
-                            ),
+                        delay: 1.6,
+                        child: Text(
+                          "Seleccione una imagen:",
+                          style: Common().shortTheme,
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
-              ),
-              Spacer(),
-              // FadeInAnimation(
-              //   delay: 2.5,
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(left: 50),
-              //     child: Row(
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         Text(
-              //           "Don’t have an account?",
-              //           style: Common().hinttext,
-              //         ),
-              //         TextButton(
-              //             onPressed: () {
-              //               // GoRouter.of(context).pushNamed(Routers.signuppage.name);
-              //             },
-              //             child: Text(
-              //               "Register Now",
-              //               style: Common().mediumTheme,
-              //             )),
-              //       ],
-              //     ),
-              //   ),
-              // )
-            ],
+                // Row (
+                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //   children: [
+                //     Container(
+                //       child: Image (
+                //         image: AssetImage(srcImgLogin[8])
+                //       ),
+                //       width: 150,
+                //     ),
+                //   ],
+                // ),
+                  ListView.builder (
+                    shrinkWrap: true,
+                    itemCount: ((srcImgLogin.length ~/ 2) * 2 ) + 1 == srcImgLogin.length ? (srcImgLogin.length ~/ 2) + 1 : srcImgLogin.length ~/ 2,
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      _indexImg = index * 2;
+                      delayFade += 0.3;
+                      // return Text("primero: ${_indexImg} .. segundo: ${_indexImg + 1}");
+                      return FadeInAnimation(
+                        delay: delayFade,
+                        child: Row (
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                          children: [
+                            GestureDetector (
+                              onTap: () {
+                                
+                              },
+                              child: Container (
+                                child: Image (
+                                  image: AssetImage(srcImgLogin[_indexImg]),
+                                ),
+                                width: 115,
+                              ),
+                            ),
+                            (_indexImg + 1) < srcImgLogin.length ?
+                            GestureDetector(
+                              onTap: () {
+                                
+                              },
+                              child: Container (
+                                child: Image (
+                                  image: AssetImage(srcImgLogin[_indexImg + 1])
+                                ),
+                                width: 115,
+                              ),
+                            )
+                            :
+                            Container(
+                              width: 115,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                // Padding(
+                //   padding: const EdgeInsets.all(12.0),
+                //   child: Form(
+                //     key: _formKey,
+                //     child: Column(
+                //       children: [
+                //         FadeInAnimation(
+                //           delay: 1.9,
+                //           child: TextFormField (
+                //             validator: MultiValidator([
+                //                 RequiredValidator(errorText: 'La contraseña es requerida'), 
+                //                 PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
+                //             ]),
+                //             autovalidateMode: AutovalidateMode.onUserInteraction,
+                //             controller: passwordController,
+                //             obscureText: showPass,
+                //             decoration: InputDecoration (
+                //               filled: true,
+                //               fillColor: AppColors.blanco,
+                //               contentPadding: const EdgeInsets.all(13),
+                //               hintText: "Ingresar contraseña",
+                //               hintStyle: Common().hinttext,
+                //               border: OutlineInputBorder (
+                //                 borderSide: const BorderSide(color: Colors.black),
+                //                 borderRadius: BorderRadius.circular(12)
+                //               ),
+                //               enabledBorder: OutlineInputBorder(
+                //                 borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
+                //                 borderRadius: BorderRadius.circular(12)
+                //               ),
+                //               suffixIcon: IconButton (
+                //                 onPressed: () {
+                //                   setState(() {
+                //                     showPass = !showPass;
+                //                   });
+                //                 },
+                //                 icon: Icon(
+                //                   showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
+                //                 )
+                //               )
+                //             ),
+                //           ),
+                //         ),
+                //         const SizedBox(
+                //           height: 15,
+                //         ),
+                //         FadeInAnimation(
+                //           delay: 2.1,
+                //           child: TextFormField (
+                //             validator: MultiValidator([
+                //                 RequiredValidator(errorText: 'La contraseña es requerida'), 
+                //                 PatternValidator(r'^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).*$', errorText: 'Contraseña no válida')
+                //             ]),
+                //             autovalidateMode: AutovalidateMode.onUserInteraction,
+                //             controller: confirmPasswordController,
+                //             obscureText: showPassConfirm,
+                //             decoration: InputDecoration (
+                //               filled: true,
+                //               fillColor: AppColors.blanco,
+                //               contentPadding: const EdgeInsets.all(13),
+                //               hintText: "Confirmar contraseña",
+                //               hintStyle: Common().hinttext,
+                //               border: OutlineInputBorder (
+                //                 borderSide: const BorderSide(color: Colors.black),
+                //                 borderRadius: BorderRadius.circular(12)
+                //               ),
+                //               enabledBorder: OutlineInputBorder(
+                //                 borderSide: isIncorrectPassword ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
+                //                 borderRadius: BorderRadius.circular(12)
+                //               ),
+                //               suffixIcon: IconButton (
+                //                 onPressed: () {
+                //                   setState(() {
+                //                     showPassConfirm = !showPassConfirm;
+                //                   });
+                //                 },
+                //                 icon: Icon(
+                //                   showPassConfirm ? Icons.remove_red_eye_outlined : Icons.visibility_off
+                //                 )
+                //               )
+                //             ),
+                //           ),
+                //         ),
+                //         SizedBox(
+                //           height: 30,
+                //         ),
+                //         FadeInAnimation(
+                //           delay: 2.4,
+                //           child: ElevatedButton (
+                //             onPressed: () async {
+                //               registerData();
+                //             },
+                //             style: Common().styleBtnLite,
+                //             child: isLoading
+                //             ? const CupertinoActivityIndicator()
+                //             : FittedBox(
+                //                 child: Text(
+                //                   "Finalizar",
+                //                   style: Common().semiboldwhite,
+                //                 )
+                //               ),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                
+                Spacer(),
+                // FadeInAnimation(
+                //   delay: 2.5,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(left: 50),
+                //     child: Row(
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       children: [
+                //         Text(
+                //           "Don’t have an account?",
+                //           style: Common().hinttext,
+                //         ),
+                //         TextButton(
+                //             onPressed: () {
+                //               // GoRouter.of(context).pushNamed(Routers.signuppage.name);
+                //             },
+                //             child: Text(
+                //               "Register Now",
+                //               style: Common().mediumTheme,
+                //             )),
+                //       ],
+                //     ),
+                //   ),
+                // )
+              ],
+            ),
           ),
         ),
-      ),
     );
+    
   }
 }

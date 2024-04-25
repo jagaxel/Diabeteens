@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterDateSexTutorPage extends StatefulWidget {
   final String correo;
@@ -76,21 +77,43 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
     );
     var respuesta = jsonDecode(response.body);
     */ 
-    sexo = selectedValue == "Masculino" ? "M" : "F";
-    Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: (context) => RegisterPasswordTutorPage(
-          correo: _correo, 
-          nombre: _nombre, 
-          primerAp: _primerAP, 
-          segundoAp: _segundoAp,
-          fechaNacimiento: fechaC[0].toString(),
-          edad: _edad,
-          sexo: sexo,
+    if (_edad < 18) {
+      Fluttertoast.showToast(
+        msg: "El tutor debe de ser mayor de edad.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 4,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+    } else if (selectedValue == null) {
+      Fluttertoast.showToast(
+        msg: "Debe de seleccionar un sexo.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 4,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+    } else {
+      sexo = selectedValue == "Masculino" ? "M" : "F";
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (context) => RegisterPasswordTutorPage(
+            correo: _correo, 
+            nombre: _nombre, 
+            primerAp: _primerAP, 
+            segundoAp: _segundoAp,
+            fechaNacimiento: fechaC[0].toString(),
+            edad: _edad,
+            sexo: sexo,
+          )
         )
-      )
-    );
+      );
+    }
   }
 
   Future<void> _calculateAge() async {

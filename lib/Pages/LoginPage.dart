@@ -13,14 +13,15 @@ import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:diabeteens_v2/Widget/CustomWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 import 'package:flutter/cupertino.dart';
-// import 'package:flutter_email_sender/flutter_email_sender.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/loginScreen';
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginPage> {
 
   DirectionIp ip = DirectionIp();
 
-/*
+
   _launch(url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -53,25 +54,25 @@ class _LoginScreenState extends State<LoginPage> {
   }
 
   launchEMAI() async {
-    // final Uri _emailLaunchUri = Uri(
-    //   scheme: 'mailto',
-    //   path: 'pp103634@gmail.com',
-    //   queryParameters: {
-    //     'subject': 'Codigo de Validación',
-    //     'body': 'Prueba'
-    //   }
-    // );
-    // _launch(_emailLaunchUri.toString());
-    final Email email = await Email(
-      body: 'Prueba',
-      subject: 'Codigo',
-      recipients: ['pp103634@gmail.com'],
-      isHTML: false,
+    final Uri _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'pp103634@gmail.com',
+      queryParameters: {
+        'subject': 'Codigo de Validación',
+        'body': 'Prueba'
+      }
     );
+    _launch(_emailLaunchUri.toString());
+    // final Email email = await Email(
+    //   body: 'Prueba',
+    //   subject: 'Codigo',
+    //   recipients: ['pp103634@gmail.com'],
+    //   isHTML: false,
+    // );
 
-    await FlutterEmailSender.send(email);
+    // await FlutterEmailSender.send(email);
   }
-*/
+
 
   Future<void> sendData() async {
     try {
@@ -259,8 +260,8 @@ class _LoginScreenState extends State<LoginPage> {
                                     showPass = !showPass;
                                   });
                                 },
-                                icon: const Icon(
-                                  Icons.remove_red_eye_outlined
+                                icon: Icon(
+                                  showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
                                 )
                               )
                             ),
@@ -303,6 +304,7 @@ class _LoginScreenState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               sendData();
+                              // launchEMAI();
                             },
                             style: Common().styleBtnLite,
                             child: isLoading

@@ -1,4 +1,5 @@
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordHijo.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         useMaterial3: true,
       ),
       home: LoginPage()
+      // home: RegisterPasswordHijoPage(edad: 20, fechaNacimiento: '2000-03-16', idTutor: 3, nombre: "Jairo", peso: "34", primerAp: "Garcia", segundoAp: "Alcala", sexo: "H", telefono: "44534",)
     );
 
     // return Scaffold(

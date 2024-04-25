@@ -6,6 +6,7 @@ import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
 
 class HomeTutor extends StatefulWidget {
   final int idHijo;
@@ -140,135 +141,166 @@ class HomeTutorState extends State<HomeTutor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF4c709a),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 70,
+      backgroundColor: AppColors.fondoColorAzul,
+      body: Stack(
+        children: [
+          FadeInAnimation (
+            delay: 1,
+            child: AppBar (
+              backgroundColor: AppColors.fondoColorAzul,
+              automaticallyImplyLeading: false,
+              title: Center(
+                child: Text("DIABETEENS"),
               ),
-              const Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  'Glucosa',
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(0),
-                child: Stack(
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 1.20, //Tamaño de la gráfica (heigth)
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 18,
-                          left: 12,
-                          top: 15,
-                          bottom: 12,
-                        ),
-                        child: LineChart(
-                          mainData(),
-                        ),
-                      ),
-                    ),
-                    // SizedBox(
-                    //   width: 65,
-                    //   height: 38,
-                    //   child: Text(
-                    //     'Glucosa',
-                    //     style: TextStyle(
-                    //       fontSize: 18,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-              AspectRatio(
-                aspectRatio: 1.3,
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    Expanded(
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: PieChart(
-                          PieChartData(
-                            pieTouchData: PieTouchData(
-                              touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                                setState(() {
-                                  if (!event.isInterestedForInteractions ||
-                                      pieTouchResponse == null ||
-                                      pieTouchResponse.touchedSection == null) {
-                                    touchedIndex = -1;
-                                    return;
-                                  }
-                                  touchedIndex = pieTouchResponse
-                                      .touchedSection!.touchedSectionIndex;
-                                });
-                              },
-                            ),
-                            borderData: FlBorderData(
-                              show: false,
-                            ),
-                            sectionsSpace: 0,
-                            centerSpaceRadius: 40,
-                            sections: showingSections(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Column(
-                        children: <Widget>[
-                          Indicator(
-                            color: AppColors.contentColorRed,
-                            text: 'Hiperglucemia (+180)',
-                            isSquare: true,
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Indicator(
-                            color: Color.fromARGB(255, 74, 202, 78),
-                            text: 'Normal',
-                            isSquare: true,
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-                          Indicator(
-                            color: AppColors.contentColorBlue,
-                            text: 'Hipóglucemia (-70)',
-                            isSquare: true,
-                          ),
-                          SizedBox(
-                            height: 18,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 28,
-                    ),
-                  ],
-                ),
-              )
-            ],
+              titleSpacing: 5, 
+              actions: [
+                IconButton(
+                  onPressed: () {
+                  }, 
+                  icon: Image(
+                    image: AssetImage("assets/images/logo-diabeteens.png"),
+                  )
+                )
+              ],
+            ),
           ),
-        ),
-      ),
+          SafeArea (
+            bottom: false,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 70,
+                  ),
+                  const Align(
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      'Glucosa',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Stack(
+                      children: <Widget>[
+                        AspectRatio(
+                          aspectRatio: 1.20, //Tamaño de la gráfica (heigth)
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              right: 18,
+                              left: 12,
+                              top: 15,
+                              bottom: 12,
+                            ),
+                            child: LineChart(
+                              mainData(),
+                            ),
+                          ),
+                        ),
+                        // SizedBox(
+                        //   width: 65,
+                        //   height: 38,
+                        //   child: Text(
+                        //     'Glucosa',
+                        //     style: TextStyle(
+                        //       fontSize: 18,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                  AspectRatio(
+                    aspectRatio: 1.3,
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 18,
+                        ),
+                        Expanded(
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: PieChart(
+                              PieChartData(
+                                pieTouchData: PieTouchData(
+                                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          pieTouchResponse == null ||
+                                          pieTouchResponse.touchedSection == null) {
+                                        touchedIndex = -1;
+                                        return;
+                                      }
+                                      touchedIndex = pieTouchResponse
+                                          .touchedSection!.touchedSectionIndex;
+                                    });
+                                  },
+                                ),
+                                borderData: FlBorderData(
+                                  show: false,
+                                ),
+                                sectionsSpace: 0,
+                                centerSpaceRadius: 40,
+                                sections: showingSections(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Column(
+                            children: <Widget>[
+                              Indicator(
+                                color: AppColors.contentColorRed,
+                                text: 'Hiperglucemia (+180)',
+                                // textColor: Colors.black,
+                                textColor: AppColors.contentColorRed,
+                                isSquare: true,
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Indicator(
+                                color: Color.fromARGB(255, 74, 202, 78),
+                                text: 'Normal',
+                                // textColor: Colors.black,
+                                textColor: Color.fromARGB(255, 74, 202, 78),
+                                isSquare: true,
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Indicator(
+                                color: AppColors.contentColorBlue,
+                                text: 'Hipóglucemia (-70)',
+                                // textColor: Colors.black,
+                                textColor: AppColors.contentColorBlue,
+                                isSquare: true,
+                              ),
+                              SizedBox(
+                                height: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 28,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        
+        ],
+      )
     );
   }
 
@@ -276,7 +308,8 @@ class HomeTutorState extends State<HomeTutor> {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 12,
-      color: Colors.white,
+      color: Colors.black
+      ,
     );
     Widget text;
     int cantDias = listNameDays.length;
@@ -321,7 +354,7 @@ class HomeTutorState extends State<HomeTutor> {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
-      color: Colors.white
+      color: Colors.black
     );
     String text;
     switch (value.toInt()) {

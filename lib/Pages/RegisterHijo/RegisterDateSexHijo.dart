@@ -8,13 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterDateSexHijoPage extends StatefulWidget {
+  final int idTutor;
   final String telefono;
   final String nombre;
   final String primerAp;
   final String segundoAp;
-  const RegisterDateSexHijoPage({super.key, required this.telefono, required this.nombre, required this.primerAp, required this.segundoAp});
+  const RegisterDateSexHijoPage({super.key, required this.telefono, required this.nombre, required this.primerAp, required this.segundoAp, required this.idTutor});
 
   @override
   State<RegisterDateSexHijoPage> createState() => _RegisterDateSexHijoPageState();
@@ -23,6 +25,8 @@ class RegisterDateSexHijoPage extends StatefulWidget {
 class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
   bool flag = true;
   TextEditingController dateController = TextEditingController();
+  TextEditingController pesoController = TextEditingController();
+  late int _idTutor;
   late String _telefono;
   late String _nombre;
   late String _primerAP;
@@ -32,7 +36,8 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
 
   @override
   void initState() {
-    _correo = widget.correo;
+    _idTutor = widget.idTutor;
+    _telefono = widget.telefono;
     _nombre = widget.nombre;
     _primerAP = widget.primerAp;
     _segundoAp = widget.segundoAp;
@@ -75,22 +80,47 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
       }
     );
     var respuesta = jsonDecode(response.body);
-    */ 
-    sexo = selectedValue == "Masculino" ? "M" : "F";
-    Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: (context) => RegisterPasswordHijoPage(
-          telefono: _telefono, 
-          nombre: _nombre, 
-          primerAp: _primerAP, 
-          segundoAp: _segundoAp,
-          fechaNacimiento: fechaC[0].toString(),
-          edad: _edad,
-          sexo: sexo,
+    */
+
+    if (selectedValue == null) {
+      Fluttertoast.showToast(
+        msg: "Debe de seleccionar un sexo.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 4,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+    } else if (pesoController.text == "") {
+      Fluttertoast.showToast(
+        msg: "Debe de ingresar el peso.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 4,
+        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+        textColor: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 16.0
+      );
+    } else {
+      sexo = selectedValue == "Masculino" ? "M" : "F";
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (context) => RegisterPasswordHijoPage(
+            idTutor: _idTutor, 
+            telefono: _telefono, 
+            nombre: _nombre, 
+            primerAp: _primerAP, 
+            segundoAp: _segundoAp,
+            fechaNacimiento: fechaC[0].toString(),
+            edad: _edad,
+            sexo: sexo,
+            peso: pesoController.text
+          )
         )
-      )
-    );
+      );
+    }
   }
 
   Future<void> _calculateAge() async {
@@ -200,7 +230,7 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
                         FadeInAnimation (
                           delay: 1.9,
                           child: TextFormField (
-                            obscureText: flag ? true : false,
+                            controller: pesoController,
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,

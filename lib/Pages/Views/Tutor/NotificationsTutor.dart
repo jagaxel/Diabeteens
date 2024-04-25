@@ -465,6 +465,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.fondoColorAzul,
       appBar: AppBar(
         elevation: 0,
         leading: GestureDetector(
@@ -493,7 +494,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
           return Slidable(
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.25,
-            secondaryActions: <Widget>[
+            secondaryActions: <Widget> [
               // Container(
               //   height: 60,
               //   color: Colors.grey.shade500,
@@ -556,7 +557,8 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                               children: [
                                 TextSpan(text: "${notifications[index]["tipoDescI"]}: ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), ),
                                 TextSpan(text: "${notifications[index]["nombreI"]} ", style: TextStyle(color: Colors.black)),
-                                TextSpan(text: notifications[index]["cantidad"], style: TextStyle(color: Colors.grey.shade500),)
+                                TextSpan(text: notifications[index]["cantidad"], style: TextStyle(color: Colors.grey.shade500)),
+                                TextSpan(text: "\n${notifications[index]["fecha"]}", style: TextStyle(color: Colors.grey.shade700)),
                               ]
                             )),
                           )

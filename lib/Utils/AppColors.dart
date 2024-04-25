@@ -11,6 +11,7 @@ class AppColors {
   static const Color naranjaLite = Color(0xFFF2956B);
   static const Color naranja = Color(0xFFF44C46);
   static const Color amarillo = Color(0xFFFFC95E);
+  static const Color rojo = Color.fromARGB(255, 79, 16, 16);
 
   //Colores que se iran eliminando
   static const Color primary = contentColorCyan;
