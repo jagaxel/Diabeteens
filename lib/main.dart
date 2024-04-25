@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:snake_game/game_page.dart';
 import 'package:snake_game/start_page.dart';
 
 void main() {

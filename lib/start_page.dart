@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:snake_game/game_page.dart';
 import 'package:snake_game/info_page.dart';
 
 class StartPage extends StatefulWidget {
@@ -165,10 +163,10 @@ class SnakePainter extends CustomPainter {
     final double endX = width - offset;
     final double endY = height - offset;
 
-    canvas.drawLine(Offset(startX, startY), Offset(endX, startY), paint); // Top line
-    canvas.drawLine(Offset(endX, startY), Offset(endX, endY), paint); // Right line
-    canvas.drawLine(Offset(endX, endY), Offset(startX, endY), paint); // Bottom line
-    canvas.drawLine(Offset(startX, endY), Offset(startX, startY), paint); // Left line
+    canvas.drawLine(Offset(startX, startY), Offset(endX, startY), paint);
+    canvas.drawLine(Offset(endX, startY), Offset(endX, endY), paint);
+    canvas.drawLine(Offset(endX, endY), Offset(startX, endY), paint);
+    canvas.drawLine(Offset(startX, endY), Offset(startX, startY), paint);
   }
 
   @override
