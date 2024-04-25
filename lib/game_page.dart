@@ -559,6 +559,56 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
         ["a) Ejercicio intenso y esporádico", "b) Ejercicio aeróbico regular", "c) Solo levantamiento de pesas", "d) Ningún tipo de ejercicio"],
         "b) Ejercicio aeróbico regular",
       ),
+      Question(
+        "¿Por qué es importante hacer ejercicio regularmente si tienes diabetes tipo 1?",
+        ["a) Para tener músculos más fuertes.", "b) Para mantener controlado el azúcar en la sangre.", "c) Porque es divertido.", "d) Para poder comer más dulces."],
+        "b) Para mantener controlado el azúcar en la sangre."
+      ),
+      Question(
+        "¿Qué debe hacer una persona con diabetes tipo 1 si siente que sus niveles de azúcar están bajos?",
+        ["a) Comer muchos dulces.", "b) Pedir ayuda a un adulto.", "c) Ignorar la sensación y seguir jugando.", "d) Tomar mucha agua."],
+        "b) Pedir ayuda a un adulto."
+      ),
+      Question(
+        "¿Qué órgano del cuerpo es importante cuidar cuando tienes diabetes tipo 1?",
+        ["a) El hígado.", "b) Los pulmones.", "c) El corazón.", "d) El páncreas."],
+        "d) El páncreas."
+      ),
+      Question(
+        "¿Qué es importante llevar siempre contigo si tienes diabetes tipo 1 y sales de casa?",
+        ["a) Juguetes.", "b) Un teléfono móvil.", "c) Una identificación que indique tu condición.", "d) Dulces para emergencias."],
+        "c) Una identificación que indique tu condición."
+      ),
+      Question(
+        "¿Qué se debe hacer antes de comer algo cuando se tiene diabetes tipo 1?",
+        ["a) Decirle a tus amigos lo que vas a comer.", "b) Medir tu nivel de azúcar en la sangre.", "c) Comer sin preocuparte.", "d) No es necesario hacer nada."],
+        "b) Medir tu nivel de azúcar en la sangre."
+      ),
+      Question(
+        "¿Qué cuidado especial deben tener las personas con diabetes tipo 1 cuando hacen deporte?",
+        ["a) No es necesario hacer deporte.", "b) Beber mucha agua.", "c) Usar equipo de protección.", "d) Medir el azúcar antes y después del ejercicio."],
+        "d) Medir el azúcar antes y después del ejercicio."
+      ),
+      Question(
+        "¿Por qué es importante ir al médico regularmente si tienes diabetes tipo 1?",
+        ["a) Para tener más días libres.", "b) Para mantener bajo control tu salud y azúcar en la sangre.", "c) Para recibir dulces gratis.", "d) Porque es aburrido quedarse en casa."],
+        "b) Para mantener bajo control tu salud y azúcar en la sangre."
+      ),
+      Question(
+        "¿Qué puede ayudarte a sentirte mejor si te sientes triste por tener diabetes tipo 1?",
+        ["a) Comer muchos dulces.", "b) Hablar con un adulto de confianza.", "c) Ignorar tus sentimientos.", "d) No hay forma de sentirse mejor."],
+        "b) Hablar con un adulto de confianza."
+      ),
+      Question(
+        "¿Qué debes hacer si accidentalmente te inyectas demasiada insulina?",
+        ["a) No hacer nada, todo estará bien.", "b) Pedir ayuda a un adulto de inmediato.", "c) Comer muchos dulces para equilibrar.", "d) Tomar mucha agua."],
+        "b) Pedir ayuda a un adulto de inmediato."
+      ),
+      Question(
+        "¿Cuál es una forma divertida de mantener tus niveles de azúcar bajo control?",
+        ["a) Comer muchos dulces.", "b) Hacer ejercicios en familia.", "c) Ver televisión todo el día.", "d) No prestar atención a lo que comes."],
+        "b) Hacer ejercicios en familia."
+      ),
     ];
   }
 
