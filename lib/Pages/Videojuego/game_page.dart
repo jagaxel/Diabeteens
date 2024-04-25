@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:diabeteens_v2/Pages/Videojuego/quiz.dart';
 
-
-class SnakeGamePageOld extends StatefulWidget {
-  const SnakeGamePageOld({Key? key}) : super(key: key);
+class SnakeGamePage extends StatefulWidget {
+  const SnakeGamePage({Key? key}) : super(key: key);
 
   @override
-  State<SnakeGamePageOld> createState() => _SnakeGamePageOldState();
+  State<SnakeGamePage> createState() => _SnakeGamePageState();
 }
 
 enum Direction { up, down, left, right }
 
-class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
+class _SnakeGamePageState extends State<SnakeGamePage> {
   int row = 20, column = 20;
   List<int> borderList = [];
   List<int> snakePosition = [];
@@ -27,7 +26,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
   late int foodPosition;
   late List<Question> questions;
   int currentScore = 0;
-  static const int snakeSpeed = 300;
+  int snakeSpeed = 250;
   
   @override
   void initState() {
@@ -43,50 +42,107 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("¡Ayuda a Snake a comer sanamente!"),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/videogame/snake.png',
-                height: 100,
+        return WillPopScope(
+          onWillPop: () async {
+            //showReplayDialog();
+            return false;
+          },
+          child: AlertDialog(
+            backgroundColor: Color.fromRGBO(173, 216, 209, 1),
+            title: const Text(
+              "¡Ayuda a Snake a comer sanamente!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-              const Text("Su comida favorita son las frutas y lo ayudan a crecer."),
-              Image.asset(
-                'assets/images/fruits/apple.png',
-                height: 80,
+            ),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/videogame/serpiente.png',
+                  height: 100,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Su comida favorita son las frutas y verduras que lo ayudan a crecer.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/images/videogame/manzana.png',
+                  height: 80,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Evita los dulces, son dañinos para la salud.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/images/videogame/caramelo.png',
+                  height: 80,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Consigue la máxima cantidad de puntos que puedas. ¿Qué tan grande podrás hacer crecer a Snake?",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "Elige la dificultad",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  snakeSpeed += 150;
+                  startGame();
+                },
+                child: const Text(
+                  "Fácil",
+                  style: TextStyle(
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const Text("Evita los dulces, son dañinos para la salud."),
-              Image.asset(
-                'assets/images/kandies/candy.png',
-                height: 80,
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  startGame();
+                },
+                child: const Text(
+                  "Intermedio",
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                "Nota: Si comes algún dulce, reiniciaras el juego con más velocidad por el azúcar, ¡ten cuidado!",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "¿Cuántos puntos podrás conseguir?",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
+              TextButton(
+                onPressed: () {
+                  snakeSpeed -= 150;
+                  Navigator.pop(context);
+                  startGame();
+                },
+                child: const Text(
+                  "Difícil",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                startGame();
-              },
-              child: const Text("Continuar"),
-            ),
-          ],
         );
       },
     );
@@ -101,14 +157,17 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
     score = 0;
     gameActive = true;
     candyActive = false;
-    Timer.periodic(const Duration(milliseconds: snakeSpeed), (timer) {
+    Timer.periodic(Duration(milliseconds: snakeSpeed), (timer) {
       if (gameActive) {
         updateSnake();
         if (checkCollision()) {
           timer.cancel();
           showGameOverDialog();
         }
-        checkCandyCollision();
+        if (checkCandyCollision()) {
+          timer.cancel();
+          showGameOverDialog();
+        }
         if (!candyActive) {
           generateCandy();
         }
@@ -126,6 +185,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       MaterialPageRoute(builder: (context) => QuizScreen(selectedQuestion)),
     );
 
+    // ignore: unnecessary_null_comparison
     if (answerCorrect != null) {
       if (answerCorrect) {
         await showSuccessScreen(score);
@@ -138,7 +198,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
   }
 
   void exitGame() {
-    Navigator.pop(context);
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<void> showAnswerDialog(Question question) async {
@@ -146,51 +206,80 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("Respuesta Incorrecta"),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/videogame/wrong.png',
-                height: 100,
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: AlertDialog(
+            backgroundColor: Color.fromRGBO(235, 247, 255, 1),
+            title: const Text(
+              "Respuesta Incorrecta",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-              const Text(
-                "La respuesta correcta es:",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+            ),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/videogame/wrong.png',
+                  height: 200,
+                  width: 200,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "No te preocupes, aprendamos un poco más jugando...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  "La respuesta correcta es:",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  question.correctAnswer,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(112, 186, 166, 1),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  showReplayDialog();
+                },
+                child: const Text(
+                  "Salir",
+                  style: TextStyle(color: Colors.grey),
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                question.correctAnswer,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  startGame();
+                },
+                child: const Text(
+                  "Volver a Jugar",
+                  style: TextStyle(color: Colors.grey),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                exitGame();
-              },
-              child: const Text("Salir", style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                showReplayDialog();
-              },
-              child: const Text("Volver a Jugar", style: TextStyle(color: Colors.blue)),
-            ),
-          ],
         );
       },
     );
@@ -201,75 +290,91 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/videogame/success.png',
-                height: 100,
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: AlertDialog(
+            backgroundColor: Color.fromRGBO(235, 247, 255, 1),
+            title: const Text(
+              "Respuesta Correcta",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-              Text(
-                '¡Bien hecho, ahora tienes otra oportunidad!',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
+            ),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/videogame/success.png',
+                  height: 200,
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Aún conservas tus puntos',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                const SizedBox(height: 20),
+                Text(
+                  '¡Bien hecho, ahora tienes otra oportunidad!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Puntuación actual: $score',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                const SizedBox(height: 20),
+                Text(
+                  'Aún conservas tus puntos',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Puntuación actual: $score',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(112, 186, 166, 1),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    snakePosition = [45, 44, 43];
+                    snakeHead = snakePosition.first;
+                    direction = Direction.right;
+                  });
+                  gameActive = true;
+                  Timer.periodic(Duration(milliseconds: snakeSpeed), (timer) {
+                    if (gameActive) {
+                      updateSnake();
+                      if (checkCollision()) {
+                        timer.cancel();
+                        showGameOverDialog();
+                      }
+                      if (checkCandyCollision()) {
+                        timer.cancel();
+                        showGameOverDialog();
+                      }
+                      //checkCandyCollision();
+                      if (!candyActive) {
+                        generateCandy();
+                      }
+                    }
+                  });
+                },
+                child: const Text(
+                  'Continuar',
+                  style: TextStyle(color: Colors.grey),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // Reinicia la posición de la serpiente y continúa el juego
-                setState(() {
-                  snakePosition = [45, 44, 43];
-                  snakeHead = snakePosition.first;
-                  direction = Direction.right;
-                });
-                gameActive = true;
-                Timer.periodic(const Duration(milliseconds: snakeSpeed), (timer) {
-                  if (gameActive) {
-                    updateSnake();
-                    if (checkCollision()) {
-                      timer.cancel();
-                      showGameOverDialog();
-                    }
-                    checkCandyCollision();
-                    if (!candyActive) {
-                      generateCandy();
-                    }
-                  }
-                });
-              },
-              child: const Text(
-                'Continuar',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -280,25 +385,35 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("¿Desea Volver a Jugar?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                score = 0;
-                startGame();
-              },
-              child: const Text("Sí"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                exitGame();
-              },
-              child: const Text("No"),
-            ),
-          ],
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: AlertDialog(
+            backgroundColor: Color.fromRGBO(235, 247, 255, 1),
+            title: const Text("¿Desea salir del juego?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  startGame();
+                },
+                child: const Text("No",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  score = 0;
+                  exitGame();
+                },
+                child: const Text("Sí",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -361,10 +476,11 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
     snakeHead = snakePosition.first;
   }
 
-  void checkCandyCollision() {
+  bool checkCandyCollision() {
     if (candyActive && snakeHead == candyPosition) {
-      showGameOverDialog();
+      return true;
     }
+    return false;
   }
 
   List<Question> _generateQuestions() {
@@ -419,14 +535,48 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
         ["a) Para jugar", "b) Para mostrar a los amigos", "c) Para compartir en redes sociales", "d) Para ayudar al médico a entender y manejar la diabetes"],
         "d) Para ayudar al médico a entender y manejar la diabetes",
       ),
+      Question(
+      "¿Cuál es un síntoma común de hipoglucemia en personas con diabetes?",
+      ["a) Sed excesiva", "b) Niveles altos de azúcar en la sangre", "c) Mareos y sudoración", "d) Aumento de energía"],
+      "c) Mareos y sudoración",
+      ),
+      Question(
+        "¿Cuál es la importancia de llevar una identificación que indique la condición de diabetes?",
+        ["a) Solo por precaución", "b) Para mostrar a los amigos", "c) En caso de emergencia médica", "d) No es importante"],
+        "c) En caso de emergencia médica",
+      ),
+      Question(
+        "¿Cuáles son algunos factores que pueden afectar los niveles de azúcar en la sangre?",
+        ["a) La fase lunar", "b) El estrés y la enfermedad", "c) El color de la ropa", "d) Solo la dieta"],
+        "b) El estrés y la enfermedad",
+      ),
+      Question(
+        "¿Cuál es una recomendación para prevenir complicaciones a largo plazo de la diabetes?",
+        ["a) No visitar al médico regularmente", "b) Ignorar los niveles de azúcar", "c) Mantener un control constante de los niveles de azúcar", "d) Consumir grandes cantidades de azúcar"],
+        "c) Mantener un control constante de los niveles de azúcar",
+      ),
+      Question(
+        "¿Qué tipo de ejercicio se recomienda para mejorar la sensibilidad a la insulina?",
+        ["a) Ejercicio intenso y esporádico", "b) Ejercicio aeróbico regular", "c) Solo levantamiento de pesas", "d) Ningún tipo de ejercicio"],
+        "b) Ejercicio aeróbico regular",
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [Expanded(child: _buildGameView()), _buildGameControls()],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color.fromRGBO(112, 186, 166, 1),
+        body: Column(
+          children: [
+            Expanded(child: _buildGameView()),
+            _buildGameControls(),
+          ],
+        ),
       ),
     );
   }
@@ -443,19 +593,21 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
 
   Widget _buildGameControls() {
     return Container(
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.all(30),
     width: double.infinity,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           "Puntaje : $score",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromRGBO(173, 216, 209, 1)),
         ),
+        const SizedBox(height: 20),
         IconButton(
           onPressed: () {
             if (direction != Direction.down) direction = Direction.up;
           },
+          color: Color.fromRGBO(235, 247, 255, 1),
           icon: const Icon(Icons.arrow_circle_up),
           iconSize: 80,
         ),
@@ -466,6 +618,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
                 onPressed: () {
                   if (direction != Direction.right) direction = Direction.left;
                 },
+                color: Color.fromRGBO(235, 247, 255, 1),
                 icon: const Icon(Icons.arrow_circle_left_outlined),
                 iconSize: 80,
               ),
@@ -474,6 +627,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
                 onPressed: () {
                   if (direction != Direction.left) direction = Direction.right;
                 },
+                color: Color.fromRGBO(235, 247, 255, 1),
                 icon: const Icon(Icons.arrow_circle_right_outlined),
                 iconSize: 80,
               ),
@@ -483,6 +637,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
             onPressed: () {
               if (direction != Direction.up) direction = Direction.down;
             },
+            color: Color.fromRGBO(235, 247, 255, 1),
             icon: const Icon(Icons.arrow_circle_down_outlined),
             iconSize: 80,
           ),
@@ -513,8 +668,8 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
     return Container(
       margin: const EdgeInsets.all(1),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.blueAccent,
+        borderRadius: BorderRadius.zero,
+        color: Color.fromRGBO(235, 247, 255, 1),
       ),
     );
   }
@@ -566,10 +721,10 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       "assets/images/dessert/ice-cream.png",
       "assets/images/dessert/muffin.png",
       "assets/images/dessert/popsicle.png",
-      "assets/images/kandies/candy.png",
-      "assets/images/kandies/chewing-gum.png",
-      "assets/images/kandies/lollipop.png",
-      "assets/images/kandies/popcorn.png",
+      "assets/images/Kandies/candy.png",
+      "assets/images/Kandies/chewing-gum.png",
+      "assets/images/Kandies/lollipop.png",
+      "assets/images/Kandies/popcorn.png",
     ];
 
     String currentCandyImage = candyImages[candyPosition % candyImages.length];
@@ -587,7 +742,7 @@ class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
       margin: const EdgeInsets.all(1),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Colors.grey.withOpacity(0.05),
+        color: Color.fromRGBO(173, 216, 209, 1).withOpacity(0.05),
       ),
     );
   }
@@ -623,83 +778,84 @@ class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz'),
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              '¡Contesta correctamente y obtén una segunda oportunidad!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color.fromRGBO(173, 216, 209, 1),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                '¡Contesta correctamente y obtén otra oportunidad!',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Pregunta:',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Image.asset(
-                    'assets/images/videogame/quiz.png',
-                    height: 100,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    question.questionText,
-                    style: TextStyle(fontSize: 18, color: Colors.blue),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Opciones:',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  ...question.options.map((option) => ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context, option == question.correctAnswer);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                      minimumSize: Size(double.infinity, 50),
-                      alignment: Alignment.center,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.white, width: 2),
-                      ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(235, 247, 255, 1),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
                     ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Pregunta:',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Image.asset(
+                      'assets/images/videogame/quiz.png',
+                      height: 100,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      question.questionText,
+                      textAlign: TextAlign.center, 
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Opciones:',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    ...question.options.map((option) => ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, option == question.correctAnswer);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(112, 186, 166, 1),
+                        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        minimumSize: Size(double.infinity, 50),
+                        alignment: Alignment.center,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(color: Color.fromRGBO(235, 247, 255, 1), width: 2),
+                        ),
+                      ),
                       child: Text(
                         option,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, color: Color.fromRGBO(235, 247, 255, 1)), 
                       ),
-                    )
-                  ),),
-                ],
+                    ),),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

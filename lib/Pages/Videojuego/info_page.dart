@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
+import 'package:diabeteens_v2/Pages/Videojuego/game_page.dart';
 import 'package:flutter/material.dart';
 
 class InfoPage extends StatelessWidget {
@@ -59,7 +59,7 @@ class InfoPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StartSnakePage()),
+                      MaterialPageRoute(builder: (context) => SnakeGamePage()),
                     );
                     },
                     style: ElevatedButton.styleFrom(
