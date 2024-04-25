@@ -1,6 +1,6 @@
 import 'package:diabeteens_v2/Models/RiveAsset.dart';
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
-import 'package:diabeteens_v2/Pages/Videojuego/game_page.dart';
+import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/HistoryHijo.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/InfoMenuCardHijo.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/SideMenuTileHijo.dart';
@@ -80,7 +80,7 @@ class _MenuHijoState extends State<MenuHijo> {
                       Navigator.push(
                         context, 
                         MaterialPageRoute(
-                          builder: (context) => SnakeGamePage()
+                          builder: (context) => StartSnakePage()
                         )
                       );
                     }

@@ -5,16 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:diabeteens_v2/Pages/Videojuego/quiz.dart';
 
 
-class SnakeGamePage extends StatefulWidget {
-  const SnakeGamePage({Key? key}) : super(key: key);
+class SnakeGamePageOld extends StatefulWidget {
+  const SnakeGamePageOld({Key? key}) : super(key: key);
 
   @override
-  State<SnakeGamePage> createState() => _SnakeGamePageState();
+  State<SnakeGamePageOld> createState() => _SnakeGamePageOldState();
 }
 
 enum Direction { up, down, left, right }
 
-class _SnakeGamePageState extends State<SnakeGamePage> {
+class _SnakeGamePageOldState extends State<SnakeGamePageOld> {
   int row = 20, column = 20;
   List<int> borderList = [];
   List<int> snakePosition = [];

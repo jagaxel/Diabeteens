@@ -1,4 +1,4 @@
-import 'package:diabeteens_v2/Pages/Videojuego/game_page.dart';
+import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -696,7 +696,7 @@ class _HomeHijoState extends State<HomeHijo> {
                                   Navigator.push(
                                     context, 
                                     MaterialPageRoute(
-                                      builder: (context) => SnakeGamePage()
+                                      builder: (context) => StartSnakePage()
                                     )
                                   );
                                 },
