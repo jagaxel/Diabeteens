@@ -342,11 +342,10 @@ class _HomeHijoState extends State<HomeHijo> {
                             )
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
+                            foregroundColor: Colors.black, side: const BorderSide(
                               color: Colors.grey,
                               width: 2,
-                            ), //permite cambiar el color del border
-                            primary: Colors.black, //Cambia el color del texto del boton
+                            ), //Cambia el color del texto del boton
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(40))
                             ),
@@ -373,11 +372,10 @@ class _HomeHijoState extends State<HomeHijo> {
                             )
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
+                            foregroundColor: Colors.black, side: const BorderSide(
                               color: Colors.grey,
                               width: 2,
-                            ), //permite cambiar el color del border
-                            primary: Colors.black, //Cambia el color del texto del boton
+                            ), //Cambia el color del texto del boton
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(40))
                             ),
@@ -696,7 +694,7 @@ class _HomeHijoState extends State<HomeHijo> {
                                   Navigator.push(
                                     context, 
                                     MaterialPageRoute(
-                                      builder: (context) => StartSnakePage()
+                                      builder: (context) => StartPage()
                                     )
                                   );
                                 },

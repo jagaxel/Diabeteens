@@ -80,7 +80,7 @@ class _MenuHijoState extends State<MenuHijo> {
                       Navigator.push(
                         context, 
                         MaterialPageRoute(
-                          builder: (context) => StartSnakePage()
+                          builder: (context) => StartPage()
                         )
                       );
                     }

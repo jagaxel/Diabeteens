@@ -188,11 +188,10 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                       }, 
                       child: Text("Corregir", style: TextStyle(color: Color.fromARGB(255, 6, 114, 10)),),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
+                        foregroundColor: Colors.black, side: const BorderSide(
                           color: Color.fromARGB(255, 37, 140, 40),
                           width: 2,
-                        ), //permite cambiar el color del border
-                        primary: Colors.black, //Cambia el color del texto del boton
+                        ), //Cambia el color del texto del boton
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(40))
                         ),
@@ -219,11 +218,10 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                             )
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
+                            foregroundColor: Colors.black, side: const BorderSide(
                               color: Colors.grey,
                               width: 2,
-                            ), //permite cambiar el color del border
-                            primary: Colors.black, //Cambia el color del texto del boton
+                            ), //Cambia el color del texto del boton
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(40))
                             ),
@@ -250,11 +248,10 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                             )
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
+                            foregroundColor: Colors.black, side: const BorderSide(
                               color: Colors.grey,
                               width: 2,
-                            ), //permite cambiar el color del border
-                            primary: Colors.black, //Cambia el color del texto del boton
+                            ), //Cambia el color del texto del boton
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(40))
                             ),
@@ -571,11 +568,10 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                       }, 
                       child: Text("Validar", style: TextStyle(color: const Color.fromARGB(255, 8, 68, 118)),),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
+                        foregroundColor: Colors.black, side: const BorderSide(
                           color: Color.fromARGB(255, 11, 103, 178),
                           width: 2,
-                        ), //permite cambiar el color del border
-                        primary: Colors.black, //Cambia el color del texto del boton
+                        ), //Cambia el color del texto del boton
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))
                         ),

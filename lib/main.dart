@@ -2,6 +2,7 @@ import 'package:diabeteens_v2/Pages/LoginPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordHijo.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
+import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: ''),
+      home: const StartPage(),
+      //home: const MyHomePage(title: ''),
     );
   }
 }

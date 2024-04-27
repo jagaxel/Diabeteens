@@ -55,7 +55,7 @@ class _GetStartedScreenState extends State<VistaInicial> {
               width: widgetWidth * .5,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF795a9e)
+                  backgroundColor: Color(0xFF795a9e)
                 ),
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -93,11 +93,10 @@ class _GetStartedScreenState extends State<VistaInicial> {
                 },
                 child: Text("¿Crear cuenta?"),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(
+                  foregroundColor: Colors.white, side: BorderSide(
                     color: Color(0xFFd4b0a0),
                     // width: 4
-                  ), //permite cambiar el color del border
-                  primary: Colors.white, //Cambia el color del texto del boton
+                  ), //Cambia el color del texto del boton
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(50))
                   ) //Para cambiar el border del botón

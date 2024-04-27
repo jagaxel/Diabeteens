@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<SuccessfullRegisterSong> {
                 width: 200,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF795a9e)
+                    backgroundColor: Color(0xFF795a9e)
                   ),
                   onPressed: () {
                     Navigator.pushReplacement(

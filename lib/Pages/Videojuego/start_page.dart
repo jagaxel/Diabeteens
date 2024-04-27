@@ -1,14 +1,14 @@
 import 'package:diabeteens_v2/Pages/Videojuego/info_page.dart';
 import 'package:flutter/material.dart';
 
-class StartSnakePage extends StatefulWidget {
-  const StartSnakePage({Key? key}) : super(key: key);
+class StartPage extends StatefulWidget {
+  const StartPage({Key? key}) : super(key: key);
 
   @override
-  State<StartSnakePage> createState() => _StartSnakePageState();
+  State<StartPage> createState() => _StartPageState();
 }
 
-class _StartSnakePageState extends State<StartSnakePage> with SingleTickerProviderStateMixin {
+class _StartPageState extends State<StartPage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
