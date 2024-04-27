@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:snake_game/quiz.dart';
+import 'package:snake_game/start_page.dart';
 
 class SnakeGamePage extends StatefulWidget {
   const SnakeGamePage({Key? key}) : super(key: key);
@@ -197,7 +198,10 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
   }
 
   void exitGame() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => StartPage()),
+    );
   }
 
   Future<void> showAnswerDialog(Question question) async {
@@ -222,6 +226,16 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text(
+                  "Puntos acumulados:  $score",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 30),
                 Image.asset(
                   'assets/images/videogame/wrong.png',
                   height: 200,
@@ -236,7 +250,7 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 const Text(
                   "La respuesta correcta es:",
                   style: TextStyle(
@@ -378,6 +392,71 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
       },
     );
   }
+
+  void _showDifficultyDialog() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: Color.fromRGBO(235, 247, 255, 1),
+        title: const Text("Elige la dificultad",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold,),),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  snakeSpeed = 400;
+                  gameActive = true;
+                });
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(112, 186, 166, 1),),
+              child: const Text("Fácil",
+              style: TextStyle(color: Colors.yellow),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  snakeSpeed = 250;
+                  gameActive = true;
+                });
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(112, 186, 166, 1),),
+              child: const Text("Intermedio",
+              style: TextStyle(color: Colors.orange),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  snakeSpeed = 100;
+                  gameActive = true;
+                });
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(112, 186, 166, 1),),
+              child: const Text("Difícil",
+              style: TextStyle(color: Colors.red),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "La dificlutad se aplicará al iniciar una nueva partida",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   Future<void> showReplayDialog() async {
     await showDialog(
@@ -559,56 +638,6 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
         ["a) Ejercicio intenso y esporádico", "b) Ejercicio aeróbico regular", "c) Solo levantamiento de pesas", "d) Ningún tipo de ejercicio"],
         "b) Ejercicio aeróbico regular",
       ),
-      Question(
-        "¿Por qué es importante hacer ejercicio regularmente si tienes diabetes tipo 1?",
-        ["a) Para tener músculos más fuertes.", "b) Para mantener controlado el azúcar en la sangre.", "c) Porque es divertido.", "d) Para poder comer más dulces."],
-        "b) Para mantener controlado el azúcar en la sangre."
-      ),
-      Question(
-        "¿Qué debe hacer una persona con diabetes tipo 1 si siente que sus niveles de azúcar están bajos?",
-        ["a) Comer muchos dulces.", "b) Pedir ayuda a un adulto.", "c) Ignorar la sensación y seguir jugando.", "d) Tomar mucha agua."],
-        "b) Pedir ayuda a un adulto."
-      ),
-      Question(
-        "¿Qué órgano del cuerpo es importante cuidar cuando tienes diabetes tipo 1?",
-        ["a) El hígado.", "b) Los pulmones.", "c) El corazón.", "d) El páncreas."],
-        "d) El páncreas."
-      ),
-      Question(
-        "¿Qué es importante llevar siempre contigo si tienes diabetes tipo 1 y sales de casa?",
-        ["a) Juguetes.", "b) Un teléfono móvil.", "c) Una identificación que indique tu condición.", "d) Dulces para emergencias."],
-        "c) Una identificación que indique tu condición."
-      ),
-      Question(
-        "¿Qué se debe hacer antes de comer algo cuando se tiene diabetes tipo 1?",
-        ["a) Decirle a tus amigos lo que vas a comer.", "b) Medir tu nivel de azúcar en la sangre.", "c) Comer sin preocuparte.", "d) No es necesario hacer nada."],
-        "b) Medir tu nivel de azúcar en la sangre."
-      ),
-      Question(
-        "¿Qué cuidado especial deben tener las personas con diabetes tipo 1 cuando hacen deporte?",
-        ["a) No es necesario hacer deporte.", "b) Beber mucha agua.", "c) Usar equipo de protección.", "d) Medir el azúcar antes y después del ejercicio."],
-        "d) Medir el azúcar antes y después del ejercicio."
-      ),
-      Question(
-        "¿Por qué es importante ir al médico regularmente si tienes diabetes tipo 1?",
-        ["a) Para tener más días libres.", "b) Para mantener bajo control tu salud y azúcar en la sangre.", "c) Para recibir dulces gratis.", "d) Porque es aburrido quedarse en casa."],
-        "b) Para mantener bajo control tu salud y azúcar en la sangre."
-      ),
-      Question(
-        "¿Qué puede ayudarte a sentirte mejor si te sientes triste por tener diabetes tipo 1?",
-        ["a) Comer muchos dulces.", "b) Hablar con un adulto de confianza.", "c) Ignorar tus sentimientos.", "d) No hay forma de sentirse mejor."],
-        "b) Hablar con un adulto de confianza."
-      ),
-      Question(
-        "¿Qué debes hacer si accidentalmente te inyectas demasiada insulina?",
-        ["a) No hacer nada, todo estará bien.", "b) Pedir ayuda a un adulto de inmediato.", "c) Comer muchos dulces para equilibrar.", "d) Tomar mucha agua."],
-        "b) Pedir ayuda a un adulto de inmediato."
-      ),
-      Question(
-        "¿Cuál es una forma divertida de mantener tus niveles de azúcar bajo control?",
-        ["a) Comer muchos dulces.", "b) Hacer ejercicios en familia.", "c) Ver televisión todo el día.", "d) No prestar atención a lo que comes."],
-        "b) Hacer ejercicios en familia."
-      ),
     ];
   }
 
@@ -640,6 +669,45 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
     );
   }
 
+  void _showPauseDialog() {
+  gameActive = false;
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("El juego está en pausa...",
+        textAlign: TextAlign.center,),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              gameActive = true;
+            },
+            child: const Text("Reanudar",
+            style: TextStyle(color: Colors.grey),),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDifficultyDialog();
+            },
+            child: const Text("Dificultad",
+            style: TextStyle(color: Colors.grey),),
+          ),
+          TextButton(
+            onPressed: () {
+              exitGame();
+            },
+            child: const Text("Salir",
+            style: TextStyle(color: Colors.grey),),
+          ),
+        ],
+      );
+    },
+  );
+}
+
   Widget _buildGameControls() {
     return Container(
     padding: const EdgeInsets.all(30),
@@ -647,11 +715,19 @@ class _SnakeGamePageState extends State<SnakeGamePage> {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        IconButton(
+          onPressed: () {
+            _showPauseDialog();
+          },
+          color: Color.fromRGBO(235, 247, 255, 1),
+          icon: const Icon(Icons.pause_circle_filled),
+          iconSize: 30,
+        ),
         Text(
           "Puntaje : $score",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromRGBO(173, 216, 209, 1)),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromRGBO(173, 216, 209, 1)),
         ),
-        const SizedBox(height: 20),
+        //const SizedBox(height: 20),
         IconButton(
           onPressed: () {
             if (direction != Direction.down) direction = Direction.up;
