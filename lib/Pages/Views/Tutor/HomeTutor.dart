@@ -20,6 +20,7 @@ class HomeTutor extends StatefulWidget {
 
 class HomeTutorState extends State<HomeTutor> {
   DirectionIp ip = DirectionIp();
+  late int _idHijos;
 
   List<Color> gradientColors = [
     AppColors.contentColorCyan,
@@ -42,9 +43,9 @@ class HomeTutorState extends State<HomeTutor> {
   void getNameGraph() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Graphics/getNameDays.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Graphics/getNameDays.php'),
         body: {
-          "idHijo": "6",
+          "idHijo": _idHijos.toString(),
         }
       );
       var respuesta = jsonDecode(response.body);
@@ -62,9 +63,9 @@ class HomeTutorState extends State<HomeTutor> {
   void getDataGlucosa() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Graphics/getDataGlucosa.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Graphics/getDataGlucosa.php'),
         body: {
-          "idHijo": "6",
+          "idHijo": _idHijos.toString(),
         }
       );
       var respuesta = jsonDecode(response.body);
@@ -108,9 +109,9 @@ class HomeTutorState extends State<HomeTutor> {
   void getPorcentajePastel() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Graphics/getCantPorcentaje.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Graphics/getCantPorcentaje.php'),
         body: {
-          "idHijo": "6",
+          "idHijo": _idHijos.toString(),
         }
       );
       var respuesta = jsonDecode(response.body);
@@ -132,6 +133,7 @@ class HomeTutorState extends State<HomeTutor> {
 
   @override
   void initState() {
+    _idHijos = widget.idHijo;
     super.initState();
     getDataGrafica();
     getPorcentajePastel();
@@ -399,11 +401,11 @@ class HomeTutorState extends State<HomeTutor> {
       for (int ejeY in value) {
         ejeX += double.parse(((separacion / 100) * 10).toStringAsFixed(2));
         puntosCoord.add(FlSpot(ejeX, ejeY.toDouble()));
-        if (ejeY < 70 || ejeY > 180) {
-          colorsLinea.add(Colors.red);
-        } else {
-          colorsLinea.add(AppColors.contentColorCyan);
-        }
+        colorsLinea.add(AppColors.azul);
+        // if (ejeY < 70 || ejeY > 180) {
+        //   colorsLinea.add(Colors.red);
+        // } else {
+        // }
       }
     });
 
@@ -487,7 +489,7 @@ class HomeTutorState extends State<HomeTutor> {
             final spot = barData.spots[spotIndex];
             return TouchedSpotIndicatorData(
               FlLine(
-                color: AppColors.contentColorCyan,
+                color: AppColors.azul,
                 strokeWidth: 4,
               ),
               FlDotData(
@@ -496,7 +498,7 @@ class HomeTutorState extends State<HomeTutor> {
                     radius: 8,
                     color: Colors.white,
                     strokeWidth: 5,
-                    strokeColor: AppColors.contentColorCyan,
+                    strokeColor: AppColors.azul,
                   );
                 },
               ),

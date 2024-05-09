@@ -43,7 +43,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
         isLoading = true;
       });
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/validateCorreo.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/RegisterTutor/validateCorreo.php'),
         body: {
           "correo": emailController.text,
         }
@@ -271,28 +271,28 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                         SizedBox(
                           height: 130,
                         ),
-                        FadeInAnimation(
-                          delay: 3.1,
-                          child: ElevatedButton (
-                            onPressed: () async {
-                              // Navigator.push(
-                              //   context, 
-                              //   MaterialPageRoute(
-                              //     builder: (context) => PasswordChangesPage()
-                              //   )
-                              // );
-                            },
-                            style: Common().styleBtn,
-                            child: !flag
-                            ? const CupertinoActivityIndicator()
-                            : FittedBox(
-                                child: Text(
-                                  "Iniciar sesión",
-                                  style: Common().semiboldwhite,
-                                )
-                              ),
-                          ),
-                        ),
+                        // FadeInAnimation(
+                        //   delay: 3.1,
+                        //   child: ElevatedButton (
+                        //     onPressed: () async {
+                        //       // Navigator.push(
+                        //       //   context, 
+                        //       //   MaterialPageRoute(
+                        //       //     builder: (context) => PasswordChangesPage()
+                        //       //   )
+                        //       // );
+                        //     },
+                        //     style: Common().styleBtn,
+                        //     child: !flag
+                        //     ? const CupertinoActivityIndicator()
+                        //     : FittedBox(
+                        //         child: Text(
+                        //           "Iniciar sesión",
+                        //           style: Common().semiboldwhite,
+                        //         )
+                        //       ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

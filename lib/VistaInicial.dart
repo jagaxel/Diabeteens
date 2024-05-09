@@ -1,6 +1,6 @@
 import 'package:diabeteens_v2/Models/MenuBtn.dart';
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterUserTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/MenuTutor.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +87,7 @@ class _GetStartedScreenState extends State<VistaInicial> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegisterNamePage()
+                      builder: (context) => RegisterUserTutorPage()
                     ) 
                   );
                 },

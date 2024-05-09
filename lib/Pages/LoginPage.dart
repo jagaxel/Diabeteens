@@ -3,7 +3,7 @@ import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/ForgetPassword.dart';
 import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/LoginPasswordPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterUserTutor.dart';
 import 'package:diabeteens_v2/Pages/Views/Hijo/EntryPointHijo.dart';
 import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
@@ -80,52 +80,32 @@ class _LoginScreenState extends State<LoginPage> {
         isLoading = true;
       });
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/login.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/login.php'),
         body: {
           "usuario": emailController.text,
-          "contrasena": passwordController.text
+          // "contrasena": passwordController.text
         }
       );
       var respuesta = jsonDecode(response.body);
       print(respuesta);
       if (respuesta["existe"]) {
-        if (respuesta["isTutor"]) {
-          // ignore: use_build_context_synchronously
-          await Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => EntryPointTutor(
-                idUsuario: int.parse(respuesta["idUsuario"]), 
-                idTutor: int.parse(respuesta["idTutor"]), 
-                idPersona: int.parse(respuesta["idPersona"]),
-                usuario: respuesta["usuario"],
-                nombreCompleto: respuesta["nombreCompleto"],
-                idHijos: respuesta["idHijos"],
-                cantHijos: int.parse(respuesta["cantHijos"]),
-              )
+        await Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => LoginPasswordPage(
+              idUsuario: int.parse(respuesta["idUsuario"]), 
+              idPersona: int.parse(respuesta["idPersona"]), 
+              isTutor: respuesta["isTutor"], 
+              usuario: emailController.text
             )
-          );
-        } else {
-          // ignore: use_build_context_synchronously
-          await Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => EntryPointHijo(
-                idUsuario: int.parse(respuesta["idUsuario"]), 
-                idHijo: int.parse(respuesta["idHijo"]), 
-                idPersona: int.parse(respuesta["idPersona"]),
-                usuario: respuesta["usuario"],
-                nombreCompleto: respuesta["nombreCompleto"],
-              )
-            )
-          );
-        }
+          )
+        );
       } else {
         setState(() {
           isIncorrectUser = true;
         });
         Fluttertoast.showToast(
-          msg: "Usuario o contraseña incorrecta",
+          msg: "El usuario es incorrecto",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,
@@ -207,6 +187,9 @@ class _LoginScreenState extends State<LoginPage> {
                   child: Form(
                     child: Column(
                       children: [
+                        const SizedBox (
+                          height: 60,
+                        ),
                         FadeInAnimation (
                           delay: 1.9,
                           child: TextFormField (
@@ -235,69 +218,70 @@ class _LoginScreenState extends State<LoginPage> {
                         const SizedBox (
                           height: 20,
                         ),
-                        FadeInAnimation (
-                          delay: 2.2,
-                          child: TextFormField (
-                            controller: passwordController,
-                            obscureText: showPass,
-                            decoration: InputDecoration (
-                              filled: true,
-                              fillColor: AppColors.blanco,
-                              contentPadding: const EdgeInsets.all(13),
-                              hintText: "Contraseña",
-                              hintStyle: Common().hinttext,
-                              border: OutlineInputBorder (
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(12)
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: isIncorrectUser ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(12)
-                              ),
-                              suffixIcon: IconButton (
-                                onPressed: () {
-                                  setState(() {
-                                    showPass = !showPass;
-                                  });
-                                },
-                                icon: Icon(
-                                  showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
-                                )
-                              )
-                            ),
-                          ),
-                        ),
+                        // FadeInAnimation (
+                        //   delay: 2.2,
+                        //   child: TextFormField (
+                        //     controller: passwordController,
+                        //     obscureText: showPass,
+                        //     decoration: InputDecoration (
+                        //       filled: true,
+                        //       fillColor: AppColors.blanco,
+                        //       contentPadding: const EdgeInsets.all(13),
+                        //       hintText: "Contraseña",
+                        //       hintStyle: Common().hinttext,
+                        //       border: OutlineInputBorder (
+                        //         borderSide: BorderSide(color: Colors.black),
+                        //         borderRadius: BorderRadius.circular(12)
+                        //       ),
+                        //       enabledBorder: OutlineInputBorder(
+                        //         borderSide: isIncorrectUser ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
+                        //         borderRadius: BorderRadius.circular(12)
+                        //       ),
+                        //       suffixIcon: IconButton (
+                        //         onPressed: () {
+                        //           setState(() {
+                        //             showPass = !showPass;
+                        //           });
+                        //         },
+                        //         icon: Icon(
+                        //           showPass ? Icons.remove_red_eye_outlined : Icons.visibility_off
+                        //         )
+                        //       )
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        // FadeInAnimation(
+                        //   delay: 2.5,
+                        //   child: Align(
+                        //     alignment: Alignment.center,
+                        //     child: GestureDetector(
+                        //       onTap: () {
+                        //         // GoRouter.of(context).pushNamed(Routers.forgetpassword.name);
+                        //         Navigator.push(
+                        //           context, 
+                        //           MaterialPageRoute(
+                        //             builder: (context) => ForgetPasswordPage()
+                        //           )
+                        //         );
+                        //       },
+                        //       child: const Text(
+                        //         "¿Olvidaste tu contraseña?",
+                        //         style: TextStyle(
+                        //           fontSize: 17,
+                        //           fontWeight: FontWeight.w700,
+                        //           fontFamily: "GFSNeohellenic",
+                        //           decoration: TextDecoration.underline,
+                        //         ),
+                        //       )
+                        //     )
+                        //   ),
+                        // ),
+                        
                         SizedBox(
-                          height: 10,
-                        ),
-                        FadeInAnimation(
-                          delay: 2.5,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: GestureDetector(
-                              onTap: () {
-                                // GoRouter.of(context).pushNamed(Routers.forgetpassword.name);
-                                Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => ForgetPasswordPage()
-                                  )
-                                );
-                              },
-                              child: const Text(
-                                "¿Olvidaste tu contraseña?",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "GFSNeohellenic",
-                                  decoration: TextDecoration.underline,
-                                ),
-                              )
-                            )
-                          ),
-                        ),
-                        SizedBox(
-                          height: 100,
+                          height: 50,
                         ),
                         FadeInAnimation(
                           delay: 2.8,
@@ -317,7 +301,7 @@ class _LoginScreenState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 80,
+                          height: 230,
                         ),
                         FadeInAnimation(
                           delay: 3.1,
@@ -371,149 +355,6 @@ class _LoginScreenState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                
-    /*      
-                Form(
-                  key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 40, right: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        MyTextFormField(
-                          controller: emailController,
-                          inputTypes: TextInputType.emailAddress,
-                          myObscureText: false,
-                          suffixicon: null,
-                          hintText: 'Correo (tutor); Telefono (hijo)',
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Please enter your email';
-                          //   } else if (!EmailValidator.validate(value)) {
-                          //     return 'Invalid email address';
-                          //   }
-
-                          //   return null;
-                          // },
-                          onChanged: (value) {},
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text("Contraseña",
-                            style: TextStyle(
-                              color: Color(0xFFd4b0a0),
-                              fontSize: 12,
-                              // fontFamily: 'Nexa Bold',
-                              // fontWeight: FontWeight.w700,
-                            )),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        MyTextFormField(
-                            myObscureText: _obscureText,
-                            controller: passwordController,
-                            suffixicon: IconButton(
-                              color: Colors.white,
-                              icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                            ),
-                            inputTypes: TextInputType.visiblePassword,
-                            hintText: 'Contraseña',
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Introduzca su contraseña';
-                            //   }
-
-                            //   return null;
-                            // },
-                            onChanged: (value) {}),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MethodToSendCode()
-                                ) 
-                              );
-                              },
-                              child: const Text("Olvidé mi contraseña...",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    // fontFamily: 'Nexa Light',
-                                    fontWeight: FontWeight.w400,
-                                  ))),
-                        ]),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                CustomButton(
-                    buttonWidth: 260,
-                    buttonHeight: 46,
-                    onPressed: () async {
-                      await sendData();
-                    },
-                    text: "Iniciar Sesión",
-                    buttonBackgroundColor: Color(0xFF795a9e),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      // fontFamily: 'Nexa Light',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.01,
-                    )),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("¿No tienes cuenta?",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10,
-                          // fontFamily: 'Nexa',
-                          fontWeight: FontWeight.w500,
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => RegisterNamePage()));
-                      },
-                      child: Text("-Crear cuenta",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 10,
-                          // fontFamily: 'Nexa Light',
-                          fontWeight: FontWeight.w700,
-                        )
-                      )
-                    )
-                  ],
-                ),
-    */   
               ],
             ),
             

@@ -1,8 +1,6 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
 import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
-import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordSong.dart';
-import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPhoneSong.dart';
 import 'package:flutter/material.dart';
 
 class CodeVerification extends StatefulWidget {

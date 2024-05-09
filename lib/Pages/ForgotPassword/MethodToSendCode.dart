@@ -1,8 +1,6 @@
 import 'package:diabeteens_v2/Elements/CustomButton.dart';
 import 'package:diabeteens_v2/Pages/ForgotPassword/CodeVerification.dart';
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterBirthDateSong.dart';
-import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPoundSong.dart';
 import 'package:flutter/material.dart';
 
 class MethodToSendCode extends StatefulWidget {

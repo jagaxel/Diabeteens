@@ -20,9 +20,8 @@ class RegisterPasswordTutorPage extends StatefulWidget {
   final String primerAp;
   final String segundoAp;
   final String fechaNacimiento;
-  final int edad;
   final String sexo;
-  const RegisterPasswordTutorPage({super.key, required this.correo, required this.nombre, required this.primerAp, required this.segundoAp, required this.fechaNacimiento, required this.edad, required this.sexo});
+  const RegisterPasswordTutorPage({super.key, required this.correo, required this.nombre, required this.primerAp, required this.segundoAp, required this.fechaNacimiento, required this.sexo});
 
   @override
   State<RegisterPasswordTutorPage> createState() => _RegisterPasswordTutorPageState();
@@ -44,7 +43,6 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
   late String _primerAP;
   late String _segundoAp;
   late String _fechaNacimiento;
-  late int _edad;
   late String _sexo;
 
   DirectionIp ip = DirectionIp();
@@ -56,7 +54,6 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
     _primerAP = widget.primerAp;
     _segundoAp = widget.segundoAp;
     _fechaNacimiento = widget.fechaNacimiento;
-    _edad = widget.edad;
     _sexo = widget.sexo;
 
     super.initState();
@@ -82,16 +79,15 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
       });
       if (isEqualsPasswoords()) {
         final response = await http.post(
-          Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/registerData.php'),
+          Uri.parse('http://${ip.ip}/api_diabeteens2/RegisterTutor/registerData.php'),
           body: {
             "correo": _correo,
             "nombre": _nombre,
             "primerAP": _primerAP,
             "segundoAp": _segundoAp,
-            "fechaNacimiento": _fechaNacimiento,
-            "edad": _edad.toString(),
-            "sexo": _sexo,
             "contrasena": passwordController.text,
+            "sexo": _sexo,
+            "fechaNacimiento": _fechaNacimiento,
           }
         );
         var respuesta = jsonDecode(response.body);
@@ -101,7 +97,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => RegiSterCompleteTutorPage(idTutor: respuesta["idTutor"])
+              builder: (context) => RegiSterCompleteTutorPage(idUsuario: respuesta["idUsuario"])
             )
           );
         } else {

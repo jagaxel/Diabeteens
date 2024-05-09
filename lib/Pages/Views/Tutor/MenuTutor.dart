@@ -46,7 +46,7 @@ class _MenuTutorState extends State<MenuTutor> {
   void addSideHijos() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/getHijos.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/getHijos.php'),
         body: {
           "idHijos": _idHijos,
         }

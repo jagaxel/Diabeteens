@@ -36,7 +36,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         isLoading = true;
       });
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/RegisterTutor/validateCorreo.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/RegisterTutor/validateCorreo.php'),
         body: {
           "correo": emailController.text,
         }

@@ -1,5 +1,6 @@
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterPasswordHijo.dart';
+import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterUserHijo.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
@@ -8,23 +9,23 @@ void main() {
   runApp( MyHomePage(title: '',));
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Diabeteens',
-//       theme: ThemeData(
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       home: const StartPage(),
-//       //home: const MyHomePage(title: ''),
-//     );
-//   }
-// }
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Diabeteens',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      // home: const StartPage(),
+      home: const MyHomePage(title: ''),
+    );
+  }
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -55,7 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
         useMaterial3: true,
       ),
       home: LoginPage()
-      // home: RegisterPasswordHijoPage(edad: 20, fechaNacimiento: '2000-03-16', idTutor: 3, nombre: "Jairo", peso: "34", primerAp: "Garcia", segundoAp: "Alcala", sexo: "H", telefono: "44534",)
+      // home: RegisterUserHijoPage(idUsuario: 1)
+      // home: RegisterPasswordHijoPage(altura: 160, fechaNacimiento: '2000-03-16', idUsuario: 3, nombre: "Jairo", peso: "34", primerAp: "Garcia", segundoAp: "Alcala", sexo: "H", telefono: "44534",)
     );
 
     // return Scaffold(

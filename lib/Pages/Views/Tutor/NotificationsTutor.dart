@@ -39,17 +39,18 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
     try {
       notifications = [];
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Notifications/getNotifications.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Notifications/getNotifications.php'),
         body: {
           "idHijo": _idHijos.toString()
         }
       );
       var respuesta = jsonDecode(response.body);
       for (int i = 0; i < respuesta.length; i++) {
-        setState(() {
-          notifications.add(respuesta[i]);
-        });
+        notifications.add(respuesta[i]);
       }
+      setState(() {
+        notifications = notifications;
+      });
     } catch (e) {
       print(e);
     }
@@ -68,7 +69,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
         void addIngesta() async {
           try {
             final response = await http.post(
-              Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/confirmIngesta.php'),
+              Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/confirmIngesta.php'),
               body: {
                 "idSeguimiento": notification["id"].toString(),
                 "cantidad": cantidad.toString(),
@@ -336,7 +337,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
               onPressed: () async {
                 try {
                   final response = await http.post(
-                    Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/confirmIngesta.php'),
+                    Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/confirmIngesta.php'),
                     body: {
                       "idSeguimiento": notification["id"].toString(),
                       "cantidad": notification["cantidad"].toString(),
@@ -403,7 +404,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
               onPressed: () async {
                 try {
                   final response = await http.post(
-                    Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/removeItem.php'),
+                    Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/removeItem.php'),
                     body: {
                       "idSeguimiento": notification["id"].toString()
                     }

@@ -25,7 +25,7 @@ class _HistoryTutorState extends State<HistoryTutor> {
     try {
       notifications = [];
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/History/getHistory.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/History/getHistory.php'),
         body: {
           "idHijo": _idHijo
         }

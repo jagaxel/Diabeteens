@@ -11,7 +11,7 @@ class ImagesFood {
   void getComida() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getComida.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/getComida.php'),
         body: {
           
         }

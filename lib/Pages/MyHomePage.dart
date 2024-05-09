@@ -1,6 +1,6 @@
 import 'package:diabeteens_v2/Elements/TabBarHome.dart';
 import 'package:diabeteens_v2/Pages/LoginPage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
+import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterUserTutor.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<MyHomePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => RegisterNamePage()));
+                            builder: (_) => RegisterUserTutorPage()));
                   },
                 ),
                 ListTile(

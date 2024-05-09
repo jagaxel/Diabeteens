@@ -1,30 +1,15 @@
 import 'package:diabeteens_v2/Common/Common.dart';
-import 'package:diabeteens_v2/Elements/CustomButton.dart';
-import 'package:diabeteens_v2/Elements/MyTextFormField.dart';
-import 'package:diabeteens_v2/Pages/ForgetPassword.dart';
-import 'package:diabeteens_v2/Pages/ForgotPassword/MethodToSendCode.dart';
 import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterUserHijo.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterNamePage.dart';
-import 'package:diabeteens_v2/Pages/RegisterTutor/RegisterUserTutor.dart';
-import 'package:diabeteens_v2/Pages/Views/Hijo/EntryPointHijo.dart';
-import 'package:diabeteens_v2/Pages/Views/Tutor/EntryPointTutor.dart';
-import 'package:diabeteens_v2/Pages/Views/Tutor/HomeTutor.dart';
 import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 import 'package:diabeteens_v2/Utils/FadeAnimationTest.dart';
-import 'package:diabeteens_v2/VistaInicial.dart';
-import 'package:diabeteens_v2/Widget/CustomWidget.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:diabeteens_v2/Utils/AppColors.dart';
 // import 'package:flutter_email_sender/flutter_email_sender.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
 class RegiSterCompleteTutorPage extends StatefulWidget {
-  final int idTutor;
-  const RegiSterCompleteTutorPage({super.key, required this.idTutor});
+  final int idUsuario;
+  const RegiSterCompleteTutorPage({super.key, required this.idUsuario});
 
   @override
   State<RegiSterCompleteTutorPage> createState() => _RegiSterCompleteTutorScreenState();
@@ -34,11 +19,11 @@ class _RegiSterCompleteTutorScreenState extends State<RegiSterCompleteTutorPage>
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  late int _idTutor;
+  late int _idUsuario;
 
   @override
   void initState() {
-    _idTutor = widget.idTutor;
+    _idUsuario = widget.idUsuario;
 
     super.initState();
   }
@@ -82,7 +67,7 @@ class _RegiSterCompleteTutorScreenState extends State<RegiSterCompleteTutorPage>
                       Navigator.push(
                         context, 
                         MaterialPageRoute(
-                          builder: (context) => RegisterUserHijoPage(idTutor: _idTutor)
+                          builder: (context) => RegisterUserHijoPage(idUsuario: _idUsuario)
                         )
                       );
                     },

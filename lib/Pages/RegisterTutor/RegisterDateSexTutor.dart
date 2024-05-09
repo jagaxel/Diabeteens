@@ -7,8 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:diabeteens_v2/Utils/DirectionIp.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegisterDateSexTutorPage extends StatefulWidget {
   final String correo;
@@ -29,7 +32,10 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
   late String _primerAP;
   late String _segundoAp;
   int _edad = 0;
-  String sexo = "";
+  int? sexo = 0;
+  bool showComponent = false;
+
+  DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
@@ -37,6 +43,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
     _nombre = widget.nombre;
     _primerAP = widget.primerAp;
     _segundoAp = widget.segundoAp;
+    getGarden();
 
     super.initState();
   }
@@ -56,7 +63,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
       });
   }
 
-  String? selectedValue;
+  int? selectedValue;
 
   List<String> items = [
     'Masculino',
@@ -64,19 +71,34 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
     // '33 tipos de gays',
   ];
 
+  List<int> listIdGender = [];
+  List<String> listNameGender = [];
+  void getGarden() async {
+    print("entraaaaaaaaaaaa");
+    try {
+      final response = await http.post(
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Catalogs/getGender.php'),
+      );
+      var respuesta = jsonDecode(response.body);
+      // print(respuesta);
+      for (int i = 0; i < respuesta.length; i++) {
+        listIdGender.add(int.parse(respuesta[i]["id"]));
+        listNameGender.add(respuesta[i]["descripcion"]);
+      }
+      setState(() {
+        listIdGender = listIdGender;
+        listNameGender = listNameGender;
+        showComponent = true;
+      });
+      // print(listSrcImgLogin);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
   Future<void> validateInfo() async {
     List<String> fechaC = DateTime(selectedDate.year, selectedDate.month, selectedDate.day).toString().split(" ");
-    /*
-    final response = await http.post(
-      Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/registerBirthDate.php'),
-      body: {
-        "fechaNacimiento": fechaC[0].toString(),
-        "edad": _edadHijo.toString(),
-        "idPersona": _idPersona.toString()
-      }
-    );
-    var respuesta = jsonDecode(response.body);
-    */ 
     if (_edad < 18) {
       Fluttertoast.showToast(
         msg: "El tutor debe de ser mayor de edad.",
@@ -98,7 +120,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
         fontSize: 16.0
       );
     } else {
-      sexo = selectedValue == "Masculino" ? "M" : "F";
+      sexo = selectedValue;
       Navigator.push(
         context, 
         MaterialPageRoute(
@@ -107,9 +129,8 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
             nombre: _nombre, 
             primerAp: _primerAP, 
             segundoAp: _segundoAp,
+            sexo: sexo.toString(),
             fechaNacimiento: fechaC[0].toString(),
-            edad: _edad,
-            sexo: sexo,
           )
         )
       );
@@ -197,18 +218,21 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
                         ),
                         FadeInAnimation (
                           delay: 1.6,
-                          child: DropdownButton<String>(
+                          child: 
+                          showComponent
+                          ?
+                          DropdownButton<int>(
                             padding: EdgeInsets.only(left: 5, right: 5),
                             value: selectedValue,
-                            onChanged: (String? value) {
+                            onChanged: (int? value) {
                               setState(() {
                                 selectedValue = value;
                               });
                             },
-                            items: items.map((String value) {
-                              return DropdownMenuItem<String>(
+                            items: listIdGender.map((int value) {
+                              return DropdownMenuItem<int>(
                                 value: value,
-                                child: Text(value),
+                                child: Text(listNameGender[value - 1]),
                               );
                             }).toList(),
                             isExpanded: true,
@@ -216,6 +240,8 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
                             //   // decorationColor: AppColors.blanco
                             // ),
                           )
+                          :
+                          const CircularProgressIndicator()
                         ),
                         SizedBox(
                           height: 15,
@@ -237,30 +263,30 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 130,
+                          height: 140,
                         ),
-                        FadeInAnimation(
-                          delay: 2.2,
-                          child: ElevatedButton (
-                            onPressed: () async {
-                              // Navigator.push(
-                              //   context, 
-                              //   MaterialPageRoute(
-                              //     builder: (context) => PasswordChangesPage()
-                              //   )
-                              // );
-                            },
-                            style: Common().styleBtn,
-                            child: !flag
-                            ? const CupertinoActivityIndicator()
-                            : FittedBox(
-                                child: Text(
-                                  "Iniciar sesión",
-                                  style: Common().semiboldwhite,
-                                )
-                              ),
-                          ),
-                        ),
+                        // FadeInAnimation(
+                        //   delay: 2.2,
+                        //   child: ElevatedButton (
+                        //     onPressed: () async {
+                        //       // Navigator.push(
+                        //       //   context, 
+                        //       //   MaterialPageRoute(
+                        //       //     builder: (context) => PasswordChangesPage()
+                        //       //   )
+                        //       // );
+                        //     },
+                        //     style: Common().styleBtn,
+                        //     child: !flag
+                        //     ? const CupertinoActivityIndicator()
+                        //     : FittedBox(
+                        //         child: Text(
+                        //           "Iniciar sesión",
+                        //           style: Common().semiboldwhite,
+                        //         )
+                        //       ),
+                        //   ),
+                        // ),
                         SizedBox(
                           height: 300,
                         ),

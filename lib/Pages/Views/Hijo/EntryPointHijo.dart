@@ -10,12 +10,10 @@ import 'package:rive/rive.dart';
 // import 'package:rive/rive.dart';
 
 class EntryPointHijo extends StatefulWidget {
-  final int idUsuario;
   final int idHijo;
-  final int idPersona;
   final String usuario;
   final String nombreCompleto;
-  const EntryPointHijo({super.key, required this.idUsuario, required this.idHijo, required this.idPersona, required this.usuario, required this.nombreCompleto});
+  const EntryPointHijo({super.key, required this.idHijo, required this.usuario, required this.nombreCompleto});
 
   @override
   State<EntryPointHijo> createState() => _EntryPointHijoState();
@@ -32,17 +30,13 @@ class _EntryPointHijoState extends State<EntryPointHijo> with SingleTickerProvid
   
   bool isSideMenuClosed = true;
 
-  late int _idUsuario;
   late int _idHijo;
-  late int _idPersona;
   late String _usuario;
   late String _nombreCompleto;
 
   @override
   void initState() {
-    _idUsuario = widget.idUsuario;
     _idHijo = widget.idHijo;
-    _idPersona = widget.idPersona;
     _usuario = widget.usuario;
     _nombreCompleto = widget.nombreCompleto;
 
@@ -95,7 +89,7 @@ class _EntryPointHijoState extends State<EntryPointHijo> with SingleTickerProvid
                 scale: scaleAnimation.value,
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(24)),
-                  child: HomeHijo(idUsuario: _idUsuario)
+                  child: HomeHijo(idUsuario: _idHijo)
                 )
               ),
           

@@ -16,8 +16,8 @@ import 'package:http/http.dart' as http;
 import 'package:diabeteens_v2/Utils/DirectionIp.dart';
 
 class RegisterUserHijoPage extends StatefulWidget {
-  final int idTutor;
-  const RegisterUserHijoPage({super.key, required this.idTutor});
+  final int idUsuario;
+  const RegisterUserHijoPage({super.key, required this.idUsuario});
 
   @override
   State<RegisterUserHijoPage> createState() => _RegisterUserHijoPageState();
@@ -33,12 +33,12 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
   TextEditingController nombreController = TextEditingController();
   TextEditingController primerApController = TextEditingController();
   TextEditingController segundoApController = TextEditingController();
-  late int _idTutor;
+  late int _idUsuario;
   DirectionIp ip = DirectionIp();
 
   @override
   void initState() {
-    _idTutor = widget.idTutor;
+    _idUsuario = widget.idUsuario;
 
     super.initState();
   }
@@ -50,7 +50,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
       });
       print("entra");
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/RegisterHijo/validatePhone.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/RegisterHijo/validatePhone.php'),
         body: {
           "telefono": telefonoController.text,
         }
@@ -79,7 +79,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
           context, 
           MaterialPageRoute(
             builder: (context) => RegisterDateSexHijoPage(
-              idTutor: _idTutor, 
+              idUsuario: _idUsuario, 
               telefono: telefonoController.text, 
               nombre: nombreController.text, 
               primerAp: primerApController.text, 
@@ -267,31 +267,31 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                                   )),
                           ),
                         ),
-                        SizedBox(
-                          height: 130,
+                        const SizedBox(
+                          height: 140,
                         ),
-                        FadeInAnimation(
-                          delay: 3.1,
-                          child: ElevatedButton (
-                            onPressed: () async {
-                              // Navigator.push(
-                              //   context, 
-                              //   MaterialPageRoute(
-                              //     builder: (context) => PasswordChangesPage()
-                              //   )
-                              // );
-                            },
-                            style: Common().styleBtn,
-                            child: !flag
-                            ? const CupertinoActivityIndicator()
-                            : FittedBox(
-                                child: Text(
-                                  "Iniciar sesión",
-                                  style: Common().semiboldwhite,
-                                )
-                              ),
-                          ),
-                        ),
+                        // FadeInAnimation(
+                        //   delay: 3.1,
+                        //   child: ElevatedButton (
+                        //     onPressed: () async {
+                        //       // Navigator.push(
+                        //       //   context, 
+                        //       //   MaterialPageRoute(
+                        //       //     builder: (context) => PasswordChangesPage()
+                        //       //   )
+                        //       // );
+                        //     },
+                        //     style: Common().styleBtn,
+                        //     child: !flag
+                        //     ? const CupertinoActivityIndicator()
+                        //     : FittedBox(
+                        //         child: Text(
+                        //           "Iniciar sesión",
+                        //           style: Common().semiboldwhite,
+                        //         )
+                        //       ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

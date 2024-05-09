@@ -113,7 +113,7 @@ class _HomeHijoState extends State<HomeHijo> {
   void getComida() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/getIngesta.php'),
         body: {
           "tipoGet": "1"
         }
@@ -140,6 +140,10 @@ class _HomeHijoState extends State<HomeHijo> {
           listNameComidas.add(nombreComidas);
         }
       }
+      setState(() {
+        listSrcComidas = listSrcComidas;
+        listNameComidas = listNameComidas;
+      });
     } catch (e) {
       print(e);
     }
@@ -150,7 +154,7 @@ class _HomeHijoState extends State<HomeHijo> {
   void getMedicamento() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/getIngesta.php'),
         body: {
           "tipoGet": "2"
         }
@@ -160,6 +164,10 @@ class _HomeHijoState extends State<HomeHijo> {
         listSrcMedicamento.add(respuesta[i]["src"]);
         listNameMedicamento.add(respuesta[i]["nombre"]);
       }
+      setState(() {
+        listSrcMedicamento = listSrcMedicamento;
+        listNameMedicamento = listNameMedicamento;
+      });
     } catch (e) {
       print(e);
     }
@@ -170,7 +178,7 @@ class _HomeHijoState extends State<HomeHijo> {
   void getDeportes() async {
     try {
       final response = await http.post(
-        Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/getIngesta.php'),
+        Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/getIngesta.php'),
         body: {
           "tipoGet": "3"
         }
@@ -180,6 +188,10 @@ class _HomeHijoState extends State<HomeHijo> {
         listSrcDeportes.add(respuesta[i]["src"]);
         listNameDeportes.add(respuesta[i]["nombre"]);
       }
+      setState(() {
+        listSrcDeportes = listSrcDeportes;
+        listNameDeportes = listNameDeportes;
+      });
     } catch (e) {
       print(e);
     }
@@ -203,7 +215,7 @@ class _HomeHijoState extends State<HomeHijo> {
               cantidad = tipo == 0 ? cantSliderGlucosa.toInt() : cantSliderInsu.toInt();
             }
             final response = await http.post(
-              Uri.parse('http://${ip.ip}/api_diabeteens/Ingesta/addIngesta.php'),
+              Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/addIngesta.php'),
               body: {
                 "idUsuario": _idUsuario.toString(),
                 "tipoIngesta": tipoIngesta,
