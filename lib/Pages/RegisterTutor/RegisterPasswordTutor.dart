@@ -181,7 +181,7 @@ class _RegisterPasswordTutorPageState extends State<RegisterPasswordTutorPage> {
                     FadeInAnimation(
                       delay: 1.6,
                       child: Text(
-                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una myúcula, una minúscula, un número y un caracter especial.",
+                        "Ingrese una contraseña: mínimo de 8 caratéres, al menos una mayúcula, una minúscula, un número y un caracter especial.",
                         style: Common().shortTheme,
                       ),
                     )

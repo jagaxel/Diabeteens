@@ -200,6 +200,7 @@ class _LoginScreenState extends State<LoginPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Usuario",
+                              labelText: "Usuario:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: BorderSide(color: Colors.black),

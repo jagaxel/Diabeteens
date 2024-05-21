@@ -167,6 +167,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Ingrese número de teléfono",
+                              labelText: "Teléfono:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -184,7 +185,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                             controller: nombreController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El nombre es requerido"),
-                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration (
@@ -192,6 +193,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Nombre(s)",
+                              labelText: "Nombre(s):",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -209,7 +211,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                             controller: primerApController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El primer apellido es requerido"),
-                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration (
@@ -217,6 +219,7 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Primer Apellido",
+                              labelText: "Primer Apellido:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -232,12 +235,13 @@ class _RegisterUserHijoPageState extends State<RegisterUserHijoPage> {
                           delay: 2.5,
                           child: TextFormField (
                             controller: segundoApController,
-                            validator: PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto'),
+                            validator: PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto'),
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Segundo Apellido",
+                              labelText: "Segundo Apellido:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),

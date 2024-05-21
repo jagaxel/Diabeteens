@@ -25,7 +25,7 @@ class _CompleteRegisterPageState extends State<CompleteRegisterPage> {
             FadeInAnimation(
               delay: 1,
               child: Text(
-                "¡Reigstro Completado!",
+                "¡Registro Completado!",
                 style: Common().titelTheme,
               ),
             ),

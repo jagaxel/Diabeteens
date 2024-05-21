@@ -38,6 +38,9 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
   int _edad = 0;
   int? sexo;
   bool showComponent = false;
+  double delayFade = 2.2;
+  bool isIncorrectPeso = false;
+  bool isIncorrectAltura = false;
 
   DirectionIp ip = DirectionIp();
 
@@ -60,6 +63,7 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
       initialDate: selectedDate,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
+      locale: const Locale('es', 'ES'),
     );
     if (picked != null && picked != selectedDate)
       setState(() {
@@ -73,7 +77,7 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
   List<String> items = [
     'Masculino',
     'Femenino',
-    // '31 tipos de gays',
+    // '39 tipos de gays',
   ];
 
   List<int> listIdGender = [];
@@ -102,27 +106,31 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
 
   Future<void> validateInfo() async {
     List<String> fechaC = DateTime(selectedDate.year, selectedDate.month, selectedDate.day).toString().split(" ");
+    double? peso = double.tryParse(pesoController.text);
+    double? altura = double.tryParse(alturaController.text);
 
-    if (selectedValue == null) {
-      Fluttertoast.showToast(
-        msg: "Debe de seleccionar un sexo.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        timeInSecForIosWeb: 4,
-        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
-        textColor: Color.fromARGB(255, 255, 255, 255),
-        fontSize: 16.0
-      );
-    } else if (pesoController.text == "") {
-      Fluttertoast.showToast(
-        msg: "Debe de ingresar el peso.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
-        timeInSecForIosWeb: 4,
-        backgroundColor: const Color.fromARGB(255, 158, 118, 38),
-        textColor: Color.fromARGB(255, 255, 255, 255),
-        fontSize: 16.0
-      );
+    if (peso == null) {
+      msgAlert("Formato de peso incorrecto.");
+      setState(() {
+        isIncorrectPeso = true;
+      });
+    } else if (peso <= 0) {
+      msgAlert("El peso debe de ser mayor a 0.");
+    } else if (altura == null) {
+      setState(() {
+        isIncorrectPeso = false;
+      });
+      msgAlert("Formato de altura incorrecto.");
+      setState(() {
+        isIncorrectAltura = false;
+      });
+    } else if (altura <= 0) {
+      msgAlert("La altura debe de ser mayor a 0.");
+    } else if (selectedValue == null) {
+      setState(() {
+        isIncorrectAltura = false;
+      });
+      msgAlert("Debe de seleccionar un sexo.");
     } else {
       sexo = selectedValue;
       Navigator.push(
@@ -153,6 +161,18 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
       edad--;
     }
     _edad = edad;
+  }
+
+  void msgAlert(msgText) {
+    Fluttertoast.showToast(
+      msg: msgText,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: 4,
+      backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+      textColor: Color.fromARGB(255, 255, 255, 255),
+      fontSize: 16.0
+    );
   }
 
   @override
@@ -206,10 +226,12 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
                             cursorColor: Colors.black,
                             textAlign: TextAlign.left,
                             // obscureText: flag ? true : false,
-                            controller: TextEditingController(text: selectedDate.toString()),
+                            controller: TextEditingController(text: selectedDate.toString().split(" ")[0]),
                             decoration: InputDecoration(
                               hintText: "Fecha de Nacimiento",
+                              labelText: "Fecha de Nacimiento",
                               filled: true,
+                              prefixIcon: const Icon(Icons.calendar_today),
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintStyle: Common().hinttext,
@@ -224,36 +246,6 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
                           height: 15,
                         ),
                         FadeInAnimation (
-                          delay: 1.6,
-                          child: 
-                          showComponent
-                          ?
-                          DropdownButton<int>(
-                            padding: EdgeInsets.only(left: 5, right: 5),
-                            value: selectedValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                selectedValue = value;
-                              });
-                            },
-                            items: listIdGender.map((int value) {
-                              return DropdownMenuItem<int>(
-                                value: value,
-                                child: Text(listNameGender[value - 1]),
-                              );
-                            }).toList(),
-                            isExpanded: true,
-                            // style: const TextStyle(
-                            //   // decorationColor: AppColors.blanco
-                            // ),
-                          )
-                          :
-                          const CircularProgressIndicator()
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        FadeInAnimation (
                           delay: 1.9,
                           child: TextFormField (
                             controller: pesoController,
@@ -262,11 +254,16 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Peso (kg)",
+                              labelText: "Peso (kg):",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
                                 borderRadius: BorderRadius.circular(12)
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: isIncorrectPeso ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(12)
+                              )
                             ),
                           ),
                         ),
@@ -282,13 +279,48 @@ class _RegisterDateSexHijoPageState extends State<RegisterDateSexHijoPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Altura (cm)",
+                              labelText: "Altura (cm):",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
                                 borderRadius: BorderRadius.circular(12)
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: isIncorrectAltura ? BorderSide(color: Colors.red, width: 3) : BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(12)
+                              )
                             ),
                           ),
+                        ),
+                        FadeInAnimation (
+                          delay: 2.2,
+                          child: 
+                          showComponent
+                          ?
+                          ListView.builder (
+                            shrinkWrap: true,
+                            itemCount: listIdGender.length,
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemBuilder: (context, index) {
+                              delayFade += 0.3;
+                              return FadeInAnimation(
+                                delay: delayFade,
+                                child: RadioListTile(
+                                  title: Text(listNameGender[index]),
+                                  value: listIdGender[index],
+                                  groupValue: selectedValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedValue = value;
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                          )
+                          :
+                          const CircularProgressIndicator()
                         ),
                         SizedBox(
                           height: 15,

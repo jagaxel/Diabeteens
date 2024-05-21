@@ -168,6 +168,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Ingrese el correo electrónico",
+                              labelText: "Correo electrónico:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -184,7 +185,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           child: TextFormField (
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El nombre es requerido"),
-                              PatternValidator(r'', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: nombreController,
@@ -193,6 +194,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Nombre(s)",
+                              labelText: "Nombre(s):",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -209,7 +211,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           child: TextFormField (
                             validator: MultiValidator([
                               RequiredValidator(errorText: "El primer apellido es requerido"),
-                              PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto')
+                              PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto')
                             ]),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: primerApController,
@@ -218,6 +220,7 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Primer Apellido",
+                              labelText: "Primer Apellido:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),
@@ -233,12 +236,13 @@ class _RegisterUserTutorPageState extends State<RegisterUserTutorPage> {
                           delay: 2.5,
                           child: TextFormField (
                             controller: segundoApController,
-                            validator: PatternValidator(r'^[A-Za-z\.\-\s]+$', errorText: 'Formato incorrecto'),
+                            validator: PatternValidator(r'^[A-Za-zÁÉÍÓÚáéíóú\.\-\s]+$', errorText: 'Formato incorrecto'),
                             decoration: InputDecoration (
                               filled: true,
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Segundo Apellido",
+                              labelText: "Segundo Apellido:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: const BorderSide(color: Colors.black),

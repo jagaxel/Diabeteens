@@ -34,6 +34,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
   int _edad = 0;
   int? sexo = 0;
   bool showComponent = false;
+  double delayFade = 1.6;
 
   DirectionIp ip = DirectionIp();
 
@@ -55,6 +56,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
       initialDate: selectedDate,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
+      locale: const Locale('es', 'ES'),
     );
     if (picked != null && picked != selectedDate)
       setState(() {
@@ -68,13 +70,12 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
   List<String> items = [
     'Masculino',
     'Femenino',
-    // '33 tipos de gays',
+    // '39 tipos de gays',
   ];
 
   List<int> listIdGender = [];
   List<String> listNameGender = [];
   void getGarden() async {
-    print("entraaaaaaaaaaaa");
     try {
       final response = await http.post(
         Uri.parse('http://${ip.ip}/api_diabeteens2/Catalogs/getGender.php'),
@@ -95,7 +96,6 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
       print(e);
     }
   }
-
 
   Future<void> validateInfo() async {
     List<String> fechaC = DateTime(selectedDate.year, selectedDate.month, selectedDate.day).toString().split(" ");
@@ -152,6 +152,7 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.fondoColorAzul,
+      
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -199,10 +200,12 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
                             cursorColor: Colors.black,
                             textAlign: TextAlign.left,
                             // obscureText: flag ? true : false,
-                            controller: TextEditingController(text: selectedDate.toString()),
+                            controller: TextEditingController(text: selectedDate.toString().split(" ")[0]),
                             decoration: InputDecoration(
                               hintText: "Fecha de Nacimiento",
+                              labelText: "Fecha de Nacimiento",
                               filled: true,
+                              prefixIcon: const Icon(Icons.calendar_today),
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintStyle: Common().hinttext,
@@ -213,32 +216,32 @@ class _RegisterDateSexTutorPageState extends State<RegisterDateSexTutorPage> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
                         FadeInAnimation (
                           delay: 1.6,
                           child: 
                           showComponent
                           ?
-                          DropdownButton<int>(
-                            padding: EdgeInsets.only(left: 5, right: 5),
-                            value: selectedValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                selectedValue = value;
-                              });
-                            },
-                            items: listIdGender.map((int value) {
-                              return DropdownMenuItem<int>(
-                                value: value,
-                                child: Text(listNameGender[value - 1]),
+                          ListView.builder (
+                            shrinkWrap: true,
+                            itemCount: listIdGender.length,
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemBuilder: (context, index) {
+                              delayFade += 0.3;
+                              return FadeInAnimation(
+                                delay: delayFade,
+                                child: RadioListTile(
+                                  title: Text(listNameGender[index]),
+                                  value: listIdGender[index],
+                                  groupValue: selectedValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedValue = value;
+                                    });
+                                  },
+                                ),
                               );
-                            }).toList(),
-                            isExpanded: true,
-                            // style: const TextStyle(
-                            //   // decorationColor: AppColors.blanco
-                            // ),
+                            },
                           )
                           :
                           const CircularProgressIndicator()

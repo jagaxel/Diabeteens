@@ -33,6 +33,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
   late String _nombreCompleto;
   late String _idHijos;
   late int _cantHijos;
+  bool withCorrection = false;
   List<Map<String, dynamic>> notifications = [];
 
   Future<void> getNotifications() async {
@@ -68,41 +69,59 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
 
         void addIngesta() async {
           try {
-            final response = await http.post(
-              Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/confirmIngesta.php'),
-              body: {
-                "idSeguimiento": notification["id"].toString(),
-                "cantidad": cantidad.toString(),
-              }
-            );
-            var respuesta = jsonDecode(response.body);
-            // print(respuesta);
-            if (respuesta["accion"]) {
-              if (int.parse(notification["tipoI"]) == 10) {
-                home.getDataGrafica();
-                home.getPorcentajePastel();
-              }
-              Fluttertoast.showToast(
-                msg: "Registro validado",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0
-              );
-              getNotifications();
-              Navigator.pop(context);
+            int? tryCantidad;
+            if (validar) {
+              tryCantidad = int.tryParse(cantidadLibre.text);
             } else {
+              tryCantidad = int.tryParse(cantidad.toString());
+            }
+            if (tryCantidad == null) {
               Fluttertoast.showToast(
-                msg: "Intente de nuevo más tarde",
+                msg: "Formato incorrecto de la cantidad.",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Color.fromARGB(44, 255, 0, 0),
-                textColor: Colors.white,
+                timeInSecForIosWeb: 4,
+                backgroundColor: const Color.fromARGB(255, 158, 118, 38),
+                textColor: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 16.0
               );
+            } else {
+              final response = await http.post(
+                Uri.parse('http://${ip.ip}/api_diabeteens2/Ingesta/confirmIngesta.php'),
+                body: {
+                  "idSeguimiento": notification["id"].toString(),
+                  "cantidad": tryCantidad.toString(),
+                }
+              );
+              var respuesta = jsonDecode(response.body);
+              // print(respuesta);
+              if (respuesta["accion"]) {
+                if (int.parse(notification["tipoI"]) == 10) {
+                  home.getDataGrafica();
+                  home.getPorcentajePastel();
+                }
+                Fluttertoast.showToast(
+                  msg: "Registro validado",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+                );
+                getNotifications();
+                Navigator.pop(context);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Intente de nuevo más tarde",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Color.fromARGB(44, 255, 0, 0),
+                  textColor: Colors.white,
+                  fontSize: 16.0
+                );
+              }
             }
           } catch (e) {
             print(e);
@@ -185,6 +204,7 @@ class _NotificationsTutorState extends State<NotificationsTutor> {
                       onPressed: () {
                         setState(() {
                           validar = true;
+                          withCorrection = true;
                         });
                       }, 
                       child: Text("Corregir", style: TextStyle(color: Color.fromARGB(255, 6, 114, 10)),),

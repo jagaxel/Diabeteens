@@ -4,9 +4,14 @@ import 'package:diabeteens_v2/Pages/RegisterHijo/RegisterUserHijo.dart';
 import 'package:diabeteens_v2/VistaInicial.dart';
 import 'package:flutter/material.dart';
 import 'package:diabeteens_v2/Pages/Videojuego/start_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp( MyHomePage(title: '',));
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting('es_ES', null).then((_) {
+    runApp( MyHomePage(title: '',));
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -55,6 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF4c709a)),
         useMaterial3: true,
       ),
+      locale: const Locale('es', 'ES'),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'ES'),
+      ],
       home: LoginPage()
       // home: RegisterUserHijoPage(idUsuario: 1)
       // home: RegisterPasswordHijoPage(altura: 160, fechaNacimiento: '2000-03-16', idUsuario: 3, nombre: "Jairo", peso: "34", primerAp: "Garcia", segundoAp: "Alcala", sexo: "H", telefono: "44534",)

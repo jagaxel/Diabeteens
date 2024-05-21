@@ -224,8 +224,9 @@ class _LoginPasswordScreenState extends State<LoginPasswordPage> {
           "isTutor": _isTutor.toString()
         }
       );
+      print(response.body);
       var respuesta = jsonDecode(response.body);
-      // print(respuesta);
+      print(respuesta);
       if (respuesta["existe"]) {
         if (_isTutor) {
           // ignore: use_build_context_synchronously
@@ -376,6 +377,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordPage> {
                               fillColor: AppColors.blanco,
                               contentPadding: const EdgeInsets.all(13),
                               hintText: "Contraseña",
+                              labelText: "Contraseña:",
                               hintStyle: Common().hinttext,
                               border: OutlineInputBorder (
                                 borderSide: BorderSide(color: Colors.black),
@@ -542,7 +544,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordPage> {
                         )
                         ,
                         SizedBox(
-                          height: 40,
+                          height: _isTutor ? 210 : 40,
                         ),
                         FadeInAnimation(
                           delay: 3.1,
